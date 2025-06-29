@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Browser Games Hub</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background: #2b2b2b;
+    color: #e0e0e0;
+  }
+  header {
+    background-color: #3a3a3a;
+    color: white;
+    padding: 1.2rem 2rem;
+    text-align: center;
+  }
+  header h1 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 2rem;
+    letter-spacing: 1px;
+  }
+  main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  .game-card {
+    background: #404040;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+    padding: 1rem;
+    text-align: center;
+    user-select: none;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .game-card:hover {
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.3);
+    transform: translateY(-2px);
+  }
+  .game-number {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #4fc3f7;
+    margin-bottom: 0.4rem;
+  }
+  .game-name {
+    font-weight: 600;
+    color: #ffffff;
+    user-select: text;
+  }
+  footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #ccc;
+    font-size: 0.9rem;
+  }
+  @media (max-width: 400px) {
+    .games-grid {
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Browser Games Hub</h1>
+</header>
+<main>
+  <div class="games-grid">
+    <div class="game-card"><div class="game-number">1</div><div class="game-name">Game 1</div></div>
+    <div class="game-card"><div class="game-number">2</div><div class="game-name">Game 2</div></div>
+    <div class="game-card"><div class="game-number">3</div><div class="game-name">Game 3</div></div>
+    <div class="game-card"><div class="game-number">4</div><div class="game-name">Game 4</div></div>
+    <div class="game-card"><div class="game-number">5</div><div class="game-name">Game 5</div></div>
+    <div class="game-card"><div class="game-number">6</div><div class="game-name">Game 6</div></div>
+    <div class="game-card"><div class="game-number">7</div><div class="game-name">Game 7</div></div>
+    <div class="game-card"><div class="game-number">8</div><div class="game-name">Game 8</div></div>
+    <div class="game-card"><div class="game-number">9</div><div class="game-name">Game 9</div></div>
+    <div class="game-card"><div class="game-number">10</div><div class="game-name">Game 10</div></div>
+    <div class="game-card"><div class="game-number">11</div><div class="game-name">Game 11</div></div>
+    <div class="game-card"><div class="game-number">12</div><div class="game-name">Game 12</div></div>
+    <div class="game-card"><div class="game-number">13</div><div class="game-name">Game 13</div></div>
+    <div class="game-card"><div class="game-number">14</div><div class="game-name">Game 14</div></div>
+    <div class="game-card"><div class="game-number">15</div><div class="game-name">Game 15</div></div>
+    <div class="game-card"><div class="game-number">16</div><div class="game-name">Game 16</div></div>
+    <div class="game-card"><div class="game-number">17</div><div class="game-name">Game 17</div></div>
+    <div class="game-card"><div class="game-number">18</div><div class="game-name">Game 18</div></div>
+    <div class="game-card"><div class="game-number">19</div><div class="game-name">Game 19</div></div>
+    <div class="game-card"><div class="game-number">20</div><div class="game-name">Game 20</div></div>
+  </div>
+</main>
+<footer>
+  &copy; 2025 Browser Games Hub. All rights reserved.
+</footer>
+</body>
+</html>
