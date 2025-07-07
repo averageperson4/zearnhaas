@@ -230,6 +230,9 @@
       <html style="margin:0; height:100%; overflow:hidden;">
       <head><title>Bypass Tab</title></head>
       <body style="margin:0; height:100%;">
+        <div style="position:absolute; top:10px; left:10px; background:green; color:white; padding:10px; border-radius:5px; font-family:sans-serif; z-index:9999;">
+          GoGuardian bypassed successfully!!
+        </div>
         <iframe src="${url}" style="border:none; width:100vw; height:100vh;"></iframe>
       </body>
       </html>
@@ -244,6 +247,12 @@
   if (bypassLink) {
     bypassLink.addEventListener('click', e => {
       e.preventDefault();
+
+      // Remove the entire bypass container from the page
+      const bypassContainer = document.getElementById('bypass-container');
+      if (bypassContainer) {
+        bypassContainer.remove();
+      }
 
       // Open Google Classroom in a new tab
       openGoogleClassroomTab();
