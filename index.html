@@ -218,6 +218,48 @@
 </footer>
 
 <script>
+  // Detect if we're in bypass mode
+  const isBypassTab = window.location.search.includes('bypass=true');
+
+  // If in the bypass tab, replace the bypass link with a success message
+  if (isBypassTab) {
+    const bypassContainer = document.getElementById('bypass-container');
+    if (bypassContainer) {
+      bypassContainer.innerHTML = `
+        <div style="color: #00ff88; font-weight: bold;">
+          ✅ GoGuardian bypassed successfully
+        </div>
+      `;
+    }
+  }
+
+  let bypassActive = false;
+
+  // Set up the bypass link behavior
+  const bypassLink = document.getElementById('bypass-link');
+  if (bypassLink) {
+    bypassLink.addEventListener('click', e => {
+      e.preventDefault();
+      bypassActive = true;
+
+      // Open Google Classroom in a new tab
+      window.open('https://classroom.google.com', '_blank');
+
+      // Redirect current tab to the bypass site with flag
+      window.location.href = 'https://zearnhaas.github.io?bypass=true';
+    });
+  }
+
+  // Override game link behavior only if bypass is active
+  document.querySelectorAll('a.game-link').forEach(link => {
+    link.addEventListener('click', e => {
+      if (!bypassActive) return; // Normal behavior if bypass not active
+      e.preventDefault();
+      openAboutBlankWithIframe(e.currentTarget.href);
+    });
+  });
+
+  // Function to open a site in a new tab using about:blank and iframe
   function openAboutBlankWithIframe(url) {
     const newTab = window.open('about:blank', '_blank');
     if (!newTab) {
@@ -236,28 +278,6 @@
     newTab.document.write(iframeHTML);
     newTab.document.close();
   }
-
-  let bypassActive = false;
-
-  document.getElementById('bypass-link').addEventListener('click', e => {
-    e.preventDefault();
-    bypassActive = true;
-
-    // Open bypass site in a new tab
-    openAboutBlankWithIframe('https://zearnhaas.github.io');
-
-    // Redirect current tab to Google Classroom
-    window.location.href = 'https://classroom.google.com';
-  });
-
-  // Override game links behavior only if bypass is active
-  document.querySelectorAll('a.game-link').forEach(link => {
-    link.addEventListener('click', e => {
-      if (!bypassActive) return; // Normal behavior if bypass not active
-      e.preventDefault();
-      openAboutBlankWithIframe(e.currentTarget.href);
-    });
-  });
 </script>
 </body>
 </html>
