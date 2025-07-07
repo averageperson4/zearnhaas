@@ -219,7 +219,7 @@
 
 <script>
   function openBypassInNewTab(url) {
-    const newWindow = window.open('', '_blank'); // Open about:blank tab
+    const newWindow = window.open('', '_blank');
 
     if (newWindow) {
       const iframeHTML = `
@@ -231,11 +231,11 @@
             <div style="background: green; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
               GoGuardian bypassed successfully!!
             </div>
-            <button onclick="location.href='https://zearnhaas.github.io'" style="padding: 8px 12px; background: #4da6ff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            <button onclick="document.getElementById('bypass-frame').src='https://zearnhaas.github.io'" style="padding: 8px 12px; background: #4da6ff; color: white; border: none; border-radius: 5px; cursor: pointer;">
               Go Home
             </button>
           </div>
-          <iframe src="${url}" style="border:none; width:100vw; height:100vh;"></iframe>
+          <iframe id="bypass-frame" src="${url}" style="border:none; width:100vw; height:100vh;"></iframe>
         </body>
         </html>
       `;
@@ -246,7 +246,6 @@
     }
   }
 
-  // Attach click handler to bypass link
   const bypassLink = document.getElementById('bypass-link');
   if (bypassLink) {
     bypassLink.addEventListener('click', e => {
