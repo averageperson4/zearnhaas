@@ -218,54 +218,13 @@
 </footer>
 
 <script>
-  // Detect if we're in bypass mode
-  const isBypassTab = window.location.search.includes('bypass=true');
-
-  // If in the bypass tab, replace the bypass link with a success message
-  if (isBypassTab) {
-    const bypassContainer = document.getElementById('bypass-container');
-    if (bypassContainer) {
-      bypassContainer.innerHTML = `
-        <div style="color: #00ff88; font-weight: bold;">
-          ✅ GoGuardian bypassed successfully
-        </div>
-      `;
-    }
+  // Function to open Google Classroom in a normal new tab
+  function openGoogleClassroomTab() {
+    window.open('https://classroom.google.com', '_blank');
   }
 
-  let bypassActive = false;
-
-  // Set up the bypass link behavior
-  const bypassLink = document.getElementById('bypass-link');
-  if (bypassLink) {
-    bypassLink.addEventListener('click', e => {
-      e.preventDefault();
-      bypassActive = true;
-
-      // Open Google Classroom in a new tab
-      window.open('https://classroom.google.com', '_blank');
-
-      // Redirect current tab to the bypass site with flag
-      window.location.href = 'https://zearnhaas.github.io?bypass=true';
-    });
-  }
-
-  // Override game link behavior only if bypass is active
-  document.querySelectorAll('a.game-link').forEach(link => {
-    link.addEventListener('click', e => {
-      if (!bypassActive) return; // Normal behavior if bypass not active
-      e.preventDefault();
-      openAboutBlankWithIframe(e.currentTarget.href);
-    });
-  });
-
-  // Function to open a site in a new tab using about:blank and iframe
-  function openAboutBlankWithIframe(url) {
-    const newTab = window.open('about:blank', '_blank');
-    if (!newTab) {
-      alert('Please enable pop-ups for this site to use this feature.');
-      return;
-    }
+  // Function to rewrite the current tab with iframe content
+  function overwriteCurrentTabWithIframe(url) {
     const iframeHTML = `
       <!DOCTYPE html>
       <html style="margin:0; height:100%; overflow:hidden;">
@@ -273,10 +232,25 @@
       <body style="margin:0; height:100%;">
         <iframe src="${url}" style="border:none; width:100vw; height:100vh;"></iframe>
       </body>
-      </html>`;
-    newTab.document.open();
-    newTab.document.write(iframeHTML);
-    newTab.document.close();
+      </html>
+    `;
+    document.open();
+    document.write(iframeHTML);
+    document.close();
+  }
+
+  // Set up bypass click handler
+  const bypassLink = document.getElementById('bypass-link');
+  if (bypassLink) {
+    bypassLink.addEventListener('click', e => {
+      e.preventDefault();
+
+      // Open Google Classroom in a new tab
+      openGoogleClassroomTab();
+
+      // Replace this tab with an iframe page for the bypass site
+      overwriteCurrentTabWithIframe('https://zearnhaas.github.io');
+    });
   }
 </script>
 </body>
