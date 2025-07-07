@@ -2,6 +2,7 @@ This a recreation of now defunct 'billybobgames.github.io.' I will maintain it s
 
 To do:
 -download game preview image files to server for less load and more reliability
--remove the bypass goguardian option once goguardian has been bypassed
--switch which tab is redirected and which is opened for the goguardian bypass
+
+
+
 -fix the issue where game preview images are cropped on some devices
