@@ -5,8 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DuckDuckGo Search (Bypassed)</title>
   <style>
-    body, html {
-      margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column;
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
     form {
       padding: 10px;
@@ -38,24 +42,12 @@
 </head>
 <body>
 
-  <form id="searchForm">
-    <input id="searchInput" type="text" placeholder="Search DuckDuckGo" required />
+  <form action="https://html.duckduckgo.com/html/" method="GET" target="resultFrame">
+    <input type="text" name="q" placeholder="Search DuckDuckGo" required />
     <button type="submit">Search</button>
   </form>
 
-  <iframe id="resultFrame" src="https://html.duckduckgo.com/html/?q="></iframe>
-
-  <script>
-    const form = document.getElementById('searchForm');
-    const input = document.getElementById('searchInput');
-    const iframe = document.getElementById('resultFrame');
-
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      const query = encodeURIComponent(input.value);
-      iframe.src = `https://html.duckduckgo.com/html/?q=${query}`;
-    });
-  </script>
+  <iframe name="resultFrame" src="https://html.duckduckgo.com/html/?q="></iframe>
 
 </body>
 </html>
