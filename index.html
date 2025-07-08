@@ -13,16 +13,17 @@
     margin: 0;
     background: #2b2b2b;
     color: #e0e0e0;
-    position: relative;
-    overflow-x: hidden;
   }
   header {
     background-color: #3a3a3a;
     color: white;
     padding: 1.2rem 2rem;
     text-align: center;
-    position: relative;
-    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
   }
   header h1 {
     margin: 0;
@@ -30,37 +31,37 @@
     font-size: 2rem;
     letter-spacing: 1px;
   }
-  /* Bypass link styling inside header */
   #bypass-container {
-    position: absolute;
-    top: 50%;
-    right: 1.5rem;
-    transform: translateY(-50%);
-    font-size: 1rem;
-    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    max-width: 320px;
   }
-  #bypass-link {
-    background-color: #4da6ff;
-    color: white;
-    padding: 8px 14px;
+  #bypass-button {
+    background: #4da6ff;
+    border: none;
     border-radius: 6px;
-    font-weight: 600;
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: white;
     cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
+    transition: background-color 0.3s ease;
+  }
+  #bypass-button:hover {
+    background: #3a8dde;
   }
   .note {
     font-size: 0.85rem;
-    margin-top: 4px;
-    max-width: 200px;
-    color: #ccc;
+    margin-top: 6px;
+    max-width: 280px;
+    text-align: right;
+    white-space: normal;
+    line-height: 1.3;
   }
   main {
     max-width: 1200px;
     margin: 2rem auto;
     padding: 0 1rem;
-    position: relative;
-    z-index: 10;
   }
   .games-grid {
     display: grid;
@@ -76,74 +77,71 @@
     cursor: pointer;
   }
   .game-card {
-    background: #404040;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
-    padding: 0;
-    text-align: center;
-    user-select: none;
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
-    height: 300px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  .game-card:hover {
-    box-shadow: 0 4px 14px rgb(0 0 0 / 0.3);
-    transform: translateY(-4px);
-  }
-  .game-image {
-    flex-grow: 1;
-    overflow: hidden;
-  }
-  .game-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-  }
-  .game-name {
-    font-weight: 600;
-    color: #ffffff;
-    background: #333;
-    padding: 0.5rem;
-    font-size: 1rem;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-  }
+  background: #404040;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+  padding: 0;
+  text-align: center;
+  user-select: none;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.game-image {
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.game-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.game-name {
+  font-weight: 600;
+  color: #ffffff;
+  background: #333;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
   footer {
     text-align: center;
     padding: 2rem 1rem;
     color: #ccc;
     font-size: 0.9rem;
-    position: relative;
-    z-index: 10;
   }
   @media (max-width: 600px) {
     .games-grid {
       grid-template-columns: repeat(1, 1fr);
     }
     #bypass-container {
-      position: static;
-      transform: none;
+      align-items: center;
+      max-width: 100%;
       text-align: center;
-      margin-top: 0.5rem;
+    }
+    .note {
+      text-align: center;
+      max-width: 100%;
     }
   }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/tsparticles@3/tsparticles.bundle.min.js"></script>
 </head>
 <body>
-  <!-- Particle background container -->
-  <div id="tsparticles" style="position: fixed; z-index: -1; width: 100%; height: 100%; top: 0; left: 0;"></div>
-
 <header>
   <h1>billybobgames v2</h1>
   <div id="bypass-container">
-    <a id="bypass-link">Click here to bypass GoGuardian</a>
+    <button id="bypass-button">Bypass GoGuardian</button>
     <div class="note">
-      Stay on Google Classroom for five seconds, then cick the bypas tab. You'll know you're bypassed when you see a checkmark.
+      Stay on Google Classroom for five seconds, then click the bypass tab.<br />
+      You'll know you're bypassed when you see a checkmark.
     </div>
   </div>
 </header>
@@ -251,12 +249,21 @@
 </footer>
 
 <script>
-  // Open Google Classroom in a new tab
+  const bypassContainer = document.getElementById('bypass-container');
+  const bypassButton = document.getElementById('bypass-button');
+
+  window.addEventListener('load', () => {
+    if (sessionStorage.getItem('isBypassed') === 'true') {
+      bypassContainer.style.display = 'none';
+    } else {
+      bypassContainer.style.display = 'flex';
+    }
+  });
+
   function openGoogleClassroomTab() {
     window.open('https://classroom.google.com', '_blank');
   }
 
-  // Overwrite current page with bypass iframe and overlay
   function overwriteCurrentTabWithIframe(url) {
     sessionStorage.setItem('isBypassed', 'true');
 
@@ -321,7 +328,7 @@
           });
 
           goHomeBtn.addEventListener('click', () => {
-            document.getElementById('bypass-frame').src = 'https://zearnhaas.github.io';
+            document.getElementById('bypass-frame').src = '${url}';
           });
         <\/script>
       </body>
@@ -333,66 +340,9 @@
     document.close();
   }
 
-  // Hide bypass option if already bypassed
-  window.addEventListener('load', () => {
-    if (sessionStorage.getItem('isBypassed') === 'true') {
-      const bypassContainer = document.getElementById('bypass-container');
-      if (bypassContainer) bypassContainer.style.display = 'none';
-    }
-  });
-
-  // Setup click handler
-  const bypassLink = document.getElementById('bypass-link');
-  if (bypassLink) {
-    bypassLink.addEventListener('click', e => {
-      e.preventDefault();
-      openGoogleClassroomTab();
-      overwriteCurrentTabWithIframe('https://zearnhaas.github.io');
-    });
-  }
-</script>
-
-<script>
-  tsParticles.load("tsparticles", {
-    fullScreen: { enable: false },
-    background: { color: "#2b2b2b" },
-    fpsLimit: 60,
-    interactivity: {
-      events: {
-        onHover: { enable: true, mode: "repulse" },
-        resize: true
-      },
-      modes: {
-        repulse: { distance: 100, duration: 0.4 }
-      }
-    },
-    particles: {
-      color: { value: "#ffffff" },
-      links: {
-        color: "#ffffff",
-        distance: 150,
-        enable: true,
-        opacity: 0.2,
-        width: 1
-      },
-      collisions: { enable: false },
-      move: {
-        direction: "none",
-        enable: true,
-        outModes: "bounce",
-        random: false,
-        speed: 1,
-        straight: false
-      },
-      number: {
-        density: { enable: true, area: 800 },
-        value: 60
-      },
-      opacity: { value: 0.3 },
-      shape: { type: "circle" },
-      size: { value: { min: 1, max: 3 } }
-    },
-    detectRetina: true
+  bypassButton.addEventListener('click', () => {
+    openGoogleClassroomTab();
+    overwriteCurrentTabWithIframe(window.location.origin);
   });
 </script>
 </body>
