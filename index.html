@@ -245,7 +245,6 @@
   const bypassContainer = document.getElementById('bypass-container');
   const bypassButton = document.getElementById('bypass-button');
 
-  // Show or hide bypass UI based on sessionStorage flag
   window.addEventListener('load', () => {
     if (sessionStorage.getItem('isBypassed') === 'true') {
       bypassContainer.style.display = 'none';
@@ -322,11 +321,7 @@
           });
 
           goHomeBtn.addEventListener('click', () => {
-            sessionStorage.removeItem('isBypassed');
-            const iframe = document.getElementById('bypass-frame');
-            if (iframe) {
-              iframe.src = iframe.src;
-            }
+            document.getElementById('bypass-frame').src = '${url}';
           });
         <\/script>
       </body>
