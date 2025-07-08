@@ -110,9 +110,26 @@
 <header>
   <h1>billybobgames v2</h1>
   <div id="bypass-container">
-    <a id="bypass-link">Click here to bypass GoGuardian</a>
-    <div class="note" style="font-size: 0.85rem; margin-top: 4px;">
-      Stay on Google Classroom for five seconds, then cick the bypas tab. You'll know you're bypassed when you see a checkmark.
+    <button onclick="handleBypass()" style="
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    ">
+      Launch Bypass
+    </button>
+    <div class="note" style="
+      font-size: 0.85rem;
+      margin-top: 8px;
+      color: #ccc;
+      max-width: 300px;
+      text-align: left;
+    ">
+      Stay on Google Classroom for five seconds, then click the bypass tab. You'll know you're bypassed when you see a checkmark.
     </div>
   </div>
 </header>
@@ -302,23 +319,19 @@
     document.close();
   }
 
-  // Hide bypass option if already bypassed
+  // New function for button
+  function handleBypass() {
+    openGoogleClassroomTab();
+    overwriteCurrentTabWithIframe('https://zearnhaas.github.io');
+  }
+
+  // Hide bypass UI if already bypassed
   window.addEventListener('load', () => {
     if (sessionStorage.getItem('isBypassed') === 'true') {
       const bypassContainer = document.getElementById('bypass-container');
       if (bypassContainer) bypassContainer.style.display = 'none';
     }
   });
-
-  // Setup click handler
-  const bypassLink = document.getElementById('bypass-link');
-  if (bypassLink) {
-    bypassLink.addEventListener('click', e => {
-      e.preventDefault();
-      openGoogleClassroomTab();
-      overwriteCurrentTabWithIframe('https://zearnhaas.github.io');
-    });
-  }
 </script>
 </body>
 </html>
