@@ -245,34 +245,42 @@
     </a>
   </footer>
 
-  <script>
-    function openGoogleClassroomTab() {
-      window.open('https://classroom.google.com', '_blank');
+<script>
+  // Open Google Classroom in a new tab safely
+  function openGoogleClassroomTab() {
+    const newTab = window.open('https://classroom.google.com', '_blank');
+    if (!newTab) {
+      alert('Popup blocked! Please allow popups for this site.');
     }
+  }
 
-    function overwriteCurrentTabWithBypass(url) {
-      const iframeHTML = \`
-        <!DOCTYPE html>
-        <html style="margin:0; height:100%; overflow:hidden;">
-        <head><title>Bypass Tab</title></head>
-        <body style="margin:0; height:100%; font-family: sans-serif; background: #1e1e1e; color: white;">
-          <div style="position: absolute; top: 10px; left: 10px; z-index: 9999;">
-            <div style="background: green; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-              GoGuardian bypassed successfully!!
-            </div>
-            <button onclick="document.getElementById('bypass-frame').src='https://zearnhaas.github.io'" style="padding: 8px 12px; background: #4da6ff; color: white; border: none; border-radius: 5px; cursor: pointer;">
-              Go Home
-            </button>
+  // Overwrite current tab with bypass iframe content
+  function overwriteCurrentTabWithBypass(url) {
+    const iframeHTML = `
+      <!DOCTYPE html>
+      <html style="margin:0; height:100%; overflow:hidden;">
+      <head><title>Bypass Tab</title></head>
+      <body style="margin:0; height:100%; font-family: sans-serif; background: #1e1e1e; color: white;">
+        <div style="position: absolute; top: 10px; left: 10px; z-index: 9999;">
+          <div style="background: green; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+            GoGuardian bypassed successfully!!
           </div>
-          <iframe id="bypass-frame" src="\${url}" style="border:none; width:100vw; height:100vh;"></iframe>
-        </body>
-        </html>
-      \`;
-      document.open();
-      document.write(iframeHTML);
-      document.close();
-    }
+          <button onclick="document.getElementById('bypass-frame').src='https://zearnhaas.github.io'" 
+                  style="padding: 8px 12px; background: #4da6ff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Go Home
+          </button>
+        </div>
+        <iframe id="bypass-frame" src="${url}" style="border:none; width:100vw; height:100vh;"></iframe>
+      </body>
+      </html>
+    `;
+    document.open();
+    document.write(iframeHTML);
+    document.close();
+  }
 
+  // Attach event listener after DOM content is fully loaded
+  document.addEventListener('DOMContentLoaded', () => {
     const bypassLink = document.getElementById('bypass-link');
     if (bypassLink) {
       bypassLink.addEventListener('click', e => {
@@ -281,6 +289,7 @@
         overwriteCurrentTabWithBypass('https://zearnhaas.github.io');
       });
     }
-  </script>
+  });
+</script>
 </body>
 </html>
