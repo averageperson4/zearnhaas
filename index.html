@@ -323,7 +323,10 @@
 
           goHomeBtn.addEventListener('click', () => {
             sessionStorage.removeItem('isBypassed');
-            window.location.href = '${window.location.origin}';
+            const iframe = document.getElementById('bypass-frame');
+            if (iframe) {
+              iframe.src = iframe.src;
+            }
           });
         <\/script>
       </body>
