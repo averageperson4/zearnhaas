@@ -13,6 +13,7 @@
     margin: 0;
     background: #2b2b2b;
     color: #e0e0e0;
+    position: relative;
   }
   header {
     background-color: #3a3a3a;
@@ -24,6 +25,8 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
+    position: relative;
+    z-index: 10;
   }
   header h1 {
     margin: 0;
@@ -62,6 +65,8 @@
     max-width: 1200px;
     margin: 2rem auto;
     padding: 0 1rem;
+    position: relative;
+    z-index: 10;
   }
   .games-grid {
     display: grid;
@@ -77,46 +82,45 @@
     cursor: pointer;
   }
   .game-card {
-  background: #404040;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
-  padding: 0;
-  text-align: center;
-  user-select: none;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
-  height: 300px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.game-image {
-  flex-grow: 1;
-  overflow: hidden;
-}
-
-.game-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-}
-
-.game-name {
-  font-weight: 600;
-  color: #ffffff;
-  background: #333;
-  padding: 0.5rem;
-  font-size: 1rem;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-}
+    background: #404040;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+    padding: 0;
+    text-align: center;
+    user-select: none;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .game-image {
+    flex-grow: 1;
+    overflow: hidden;
+  }
+  .game-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+  .game-name {
+    font-weight: 600;
+    color: #ffffff;
+    background: #333;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
   footer {
     text-align: center;
     padding: 2rem 1rem;
     color: #ccc;
     font-size: 0.9rem;
+    position: relative;
+    z-index: 10;
   }
   @media (max-width: 600px) {
     .games-grid {
@@ -132,9 +136,23 @@
       max-width: 100%;
     }
   }
+
+  /* Particle background container */
+  #tsparticles {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+  }
 </style>
 </head>
 <body>
+
+<!-- Particle background -->
+<div id="tsparticles"></div>
+
 <header>
   <h1>billybobgames v2</h1>
   <div id="bypass-container">
@@ -242,13 +260,63 @@
   </div>
 </main>
 <footer>
-  Made with <3 by averageperson4. I don't own any of these games. This site is maintained especially for HAAS network restrictions.<br />
+  Made with &lt;3 by averageperson4. I don't own any of these games. This site is maintained especially for HAAS network restrictions.<br />
   <a href="https://docs.google.com/forms/d/1xE5A3uYYN02mKgWIO0--GJwjwLFjWhrm-p0ewwLbSYk/" target="_blank" rel="noopener" style="color: #4da6ff; text-decoration: underline;">
     Request a Game/Feedback
   </a>
 </footer>
 
+<!-- Load tsparticles library from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
 <script>
+  tsParticles.load("tsparticles", {
+    fullScreen: { enable: false },
+    fpsLimit: 60,
+    interactivity: {
+      events: {
+        onHover: {
+          enable: true,
+          mode: "repulse"
+        },
+        resize: true
+      },
+      modes: {
+        repulse: {
+          distance: 100,
+          duration: 0.4
+        }
+      }
+    },
+    particles: {
+      color: { value: "#4da6ff" },
+      links: {
+        color: "#4da6ff",
+        distance: 120,
+        enable: true,
+        opacity: 0.2,
+        width: 1
+      },
+      collisions: { enable: false },
+      move: {
+        directions: "none",
+        enable: true,
+        outModes: { default: "bounce" },
+        random: false,
+        speed: 1,
+        straight: false
+      },
+      number: { density: { enable: true, area: 800 }, value: 40 },
+      opacity: { value: 0.3 },
+      shape: { type: "circle" },
+      size: { value: { min: 1, max: 4 } }
+    },
+    detectRetina: true
+  });
+</script>
+
+<script>
+  // Your existing bypass logic below (unchanged, insert here)...
+  // Example from your last code:
   const bypassContainer = document.getElementById('bypass-container');
   const bypassButton = document.getElementById('bypass-button');
 
@@ -345,5 +413,6 @@
     overwriteCurrentTabWithIframe(window.location.origin);
   });
 </script>
+
 </body>
 </html>
