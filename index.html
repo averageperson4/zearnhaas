@@ -1,295 +1,324 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Zearn</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      background: #2b2b2b;
-      color: #e0e0e0;
-    }
-    header {
-      background-color: #3a3a3a;
-      color: white;
-      padding: 1.2rem 2rem;
-      text-align: center;
-      position: relative;
-    }
-    header h1 {
-      margin: 0;
-      font-weight: 700;
-      font-size: 2rem;
-      letter-spacing: 1px;
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Zearn</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background: #2b2b2b;
+    color: #e0e0e0;
+  }
+  header {
+    background-color: #3a3a3a;
+    color: white;
+    padding: 1.2rem 2rem;
+    text-align: center;
+    position: relative;
+  }
+  header h1 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 2rem;
+    letter-spacing: 1px;
+  }
+  /* Bypass link styling inside header */
+  #bypass-container {
+    position: absolute;
+    top: 50%;
+    right: 1.5rem;
+    transform: translateY(-50%);
+    font-size: 1rem;
+  }
+  #bypass-link {
+    color: #4da6ff;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  a.game-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  a.game-link > .game-card {
+    cursor: pointer;
+  }
+  .game-card {
+    background: #404040;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+    padding: 1rem;
+    text-align: center;
+    user-select: none;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  a.game-link:hover > .game-card {
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.3);
+    transform: translateY(-4px);
+  }
+  .game-image img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+  }
+  .game-name {
+    font-weight: 600;
+    color: #ffffff;
+    user-select: text;
+  }
+  footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #ccc;
+    font-size: 0.9rem;
+  }
+  @media (max-width: 600px) {
+    .games-grid {
+      grid-template-columns: repeat(1, 1fr);
     }
     #bypass-container {
-      position: absolute;
-      top: 50%;
-      right: 1.5rem;
-      transform: translateY(-50%);
-      font-size: 1rem;
-    }
-    #bypass-link {
-      color: #4da6ff;
-      text-decoration: underline;
-      cursor: pointer;
-    }
-    main {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.5rem;
-    }
-    a.game-link {
-      text-decoration: none;
-      color: inherit;
-      display: block;
-    }
-    a.game-link > .game-card {
-      cursor: pointer;
-    }
-    .game-card {
-      background: #404040;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
-      padding: 1rem;
+      position: static;
+      transform: none;
       text-align: center;
-      user-select: none;
-      transition: box-shadow 0.2s ease, transform 0.2s ease;
-      height: 300px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-    }
-    a.game-link:hover > .game-card {
-      box-shadow: 0 4px 14px rgb(0 0 0 / 0.3);
-      transform: translateY(-4px);
-    }
-    .game-image img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-      border-radius: 6px;
-      margin-bottom: 0.5rem;
-    }
-    .game-name {
-      font-weight: 600;
-      color: #ffffff;
-      user-select: text;
-    }
-    footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      color: #ccc;
-      font-size: 0.9rem;
-    }
-    @media (max-width: 600px) {
-      .games-grid {
-        grid-template-columns: repeat(1, 1fr);
-      }
-      #bypass-container {
-        position: static;
-        transform: none;
-        text-align: center;
-        margin-top: 0.5rem;
-      }
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>billybobgames v2</h1>
-    <div id="bypass-container">
-      <a id="bypass-link">Click here to bypass GoGuardian</a>
-      <div class="note">
-        Stay on Google Classroom for 5 seconds, then click the "Bypass Tab".
-        Do not press it again while already bypassed.
-      </div>
-    </div>
-  </header>
-
-  <main>
-    <div class="games-grid">
-      <a href="https://zearnhaas.github.io/bitlife/" class="game-link">
-        <div class="game-card">
-          <div class="game-image">
-            <img src="https://raw.githubusercontent.com/zearnhaas/zearnhaas.github.io/refs/heads/main/siteimages/bitlife.PNG" alt="Bitlife" />
-          </div>
-          <div class="game-name">Bitlife</div>
-        </div>
-      </a>
-
-      <a href="https://zearnhaas.github.io/blockblast/" class="game-link">
-        <div class="game-card">
-          <div class="game-image">
-            <img src="https://img.gamepix.com/games/block-blast-game/cover/block-blast-game.png?w=1200&ar=16:10" alt="Block Blast" />
-          </div>
-          <div class="game-name">Block Blast</div>
-        </div>
-      </a>
-
-      <a href="https://zearnhaas.github.io/cluster-main/" class="game-link">
-        <div class="game-card">
-          <div class="game-image">
-            <img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/397950/ss_f559497a1922ff6cd737852c879d3ecccc191114.1920x1080.jpg?t=1739397318" alt="Cluster Rush" />
-          </div>
-          <div class="game-name">Cluster Rush</div>
-        </div>
-      </a>
-
-      <a href="https://zearnhaas.github.io/drivemad/" class="game-link">
-        <div class="game-card">
-          <div class="game-image">
-            <img src="https://www.fancade.com/wiki/uploads/dmscreenshot.png" alt="Drive Mad" />
-          </div>
-          <div class="game-name">Drive Mad</div>
-        </div>
-      </a>
-
-      <a href="https://zearnhaas.github.io/flappybird/" class="game-link">
-        <div class="game-card">
-          <div class="game-image">
-            <img src="https://i.ytimg.com/vi/HzvpOtyJYGs/maxresdefault.jpg" alt="Flappy Bird" />
-          </div>
-          <div class="game-name">Flappy Bird</div>
-        </div>
-      </a>
-
-      <a href="https://zearnhaas.github.io/minecraft" class="game-link">
-        <div class="game-card">
-          <div class="game-image">
-            <img src="https://upload.wikimedia.org/wikipedia/en/b/b6/Minecraft_2024_cover_art.png" alt="Minecraft" />
-          </div>
-          <div class="game-name">Minecraft</div>
-        </div>
-      </a>
-
-      <a href="https://zearnhaas.github.io/polytrack/" class="game-link">
-        <div class="game-card">
-          <div class="game-image">
-            <img src="https://i.ytimg.com/vi/wXsG1d9TzdI/maxresdefault.jpg" alt="Polytrack" />
-          </div>
-          <div class="game-name">Polytrack</div>
-        </div>
-      </a>
-
-      <a href="https://zearnhaas.github.io/racesurvival/" class="game-link">
-        <div class="game-card">
-          <div class="game-image">
-            <img src="https://avatars.mds.yandex.net/get-vh/5634303/2a0000018d6537255c56baad4b6c73cf6957/orig" alt="Race Survival" />
-          </div>
-          <div class="game-name">Race Survival</div>
-        </div>
-      </a>
-
-      <a href="https://zearnhaas.github.io/retro-bowl/" class="game-link">
-        <div class="game-card">
-          <div class="game-image">
-            <img src="https://assets.nintendo.com/image/upload/ar_16:9,c_lpad,w_1240/b_white/f_auto/q_auto/ncom/software/switch/70010000048336/e3c1297d2ec30fe72a657af60c416d10c68a784bc874cf28e19cdf9261956919" alt="Retro Bowl" />
-          </div>
-          <div class="game-name">Retro Bowl</div>
-        </div>
-      </a>
-
-      <a href="https://zearnhaas.github.io/slope/" class="game-link">
-        <div class="game-card">
-          <div class="game-image">
-            <img src="https://1games.io/data/image/game/slope/slope.jpg" alt="Slope" />
-          </div>
-          <div class="game-name">Slope</div>
-        </div>
-      </a>
-
-      <a href="https://zearnhaas.github.io/stickmanhook/" class="game-link">
-        <div class="game-card">
-          <div class="game-image">
-            <img src="https://www.gearfuse.com/wp-content/uploads/2018/12/1-600x374.png" alt="Stickman Hook" />
-          </div>
-          <div class="game-name">Stickman Hook</div>
-        </div>
-      </a>
-
-      <a href="https://zearnhaas.github.io/subway-surfers/" class="game-link">
-        <div class="game-card">
-          <div class="game-image">
-            <img src="https://geometrydashwave.com/data/image/game/646379e8ff0a8d87404db507_SUBWAY_SURFERS_KEY_ART_1920x1080_LANDSCAPE_01.png" alt="Subway Surfers" />
-          </div>
-          <div class="game-name">Subway Surfers</div>
-        </div>
-      </a>
-
-      <a href="https://zearnhaas.github.io/tunnel-rush/" class="game-link">
-        <div class="game-card">
-          <div class="game-image">
-            <img src="https://parental-control.flashget.com/wp-content/uploads/sites/3/2025/04/Play-Tunnel-Rush-unblocked.jpg" alt="Tunnel Rush" />
-          </div>
-          <div class="game-name">Tunnel Rush</div>
-        </div>
-      </a>
-    </div>
-  </main>
-
-  <footer>
-    Made with <3 by averageperson4. I don't own any of these games. This site is maintained especially for HAAS network restrictions.<br />
-    <a href="https://docs.google.com/forms/d/1xE5A3uYYN02mKgWIO0--GJwjwLFjWhrm-p0ewwLbSYk/" target="_blank" rel="noopener" style="color: #4da6ff; text-decoration: underline;">
-      Request a Game/Feedback
-    </a>
-  </footer>
-
-<script>
-  // Open Google Classroom in a new tab safely
-  function openGoogleClassroomTab() {
-    const newTab = window.open('https://classroom.google.com', '_blank');
-    if (!newTab) {
-      alert('Popup blocked! Please allow popups for this site.');
+      margin-top: 0.5rem;
     }
   }
+</style>
+</head>
+<body>
+<header>
+  <h1>billybobgames v2</h1>
+  <div id="bypass-container">
+    <a id="bypass-link">Click here to bypass GoGuardian</a>
+    <div class="note" style="font-size: 0.85rem; margin-top: 4px;">
+      Stay on Google Classroom for 5 seconds, then click the "Bypass Tab". Do not press it again while already bypassed.
+    </div>
+  </div>
+</header>
+<main>
+  <div class="games-grid">
 
-  // Overwrite current tab with bypass iframe content
-  function overwriteCurrentTabWithBypass(url) {
+    <a href="https://zearnhaas.github.io/bitlife/" class="game-link">
+      <div class="game-card">
+        <div class="game-image"><img src="https://raw.githubusercontent.com/zearnhaas/zearnhaas.github.io/refs/heads/main/siteimages/bitlife.PNG" alt="Bitlife" /></div>
+        <div class="game-name">Bitlife</div>
+      </div>
+    </a>
+
+    <a href="https://zearnhaas.github.io/blockblast/" class="game-link">
+      <div class="game-card">
+        <div class="game-image"><img src="https://img.gamepix.com/games/block-blast-game/cover/block-blast-game.png?w=1200&ar=16:10" alt="Block Blast" /></div>
+        <div class="game-name">Block Blast</div>
+      </div>
+    </a>
+
+    <a href="https://zearnhaas.github.io/cluster-main/" class="game-link">
+      <div class="game-card">
+        <div class="game-image"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/397950/ss_f559497a1922ff6cd737852c879d3ecccc191114.1920x1080.jpg?t=1739397318" alt="Cluster Rush" /></div>
+        <div class="game-name">Cluster Rush</div>
+      </div>
+    </a>
+
+    <a href="https://zearnhaas.github.io/drivemad/" class="game-link">
+      <div class="game-card">
+        <div class="game-image"><img src="https://www.fancade.com/wiki/uploads/dmscreenshot.png" alt="Drive Mad" /></div>
+        <div class="game-name">Drive Mad</div>
+      </div>
+    </a>
+
+    <a href="https://zearnhaas.github.io/flappybird/" class="game-link">
+      <div class="game-card">
+        <div class="game-image"><img src="https://i.ytimg.com/vi/HzvpOtyJYGs/maxresdefault.jpg" alt="Flappy Bird" /></div>
+        <div class="game-name">Flappy Bird</div>
+      </div>
+    </a>
+
+    <a href="https://zearnhaas.github.io/minecraft" class="game-link">
+      <div class="game-card">
+        <div class="game-image"><img src="https://upload.wikimedia.org/wikipedia/en/b/b6/Minecraft_2024_cover_art.png" alt="Minecraft" /></div>
+        <div class="game-name">Minecraft</div>
+      </div>
+    </a>
+
+    <a href="https://zearnhaas.github.io/polytrack/" class="game-link">
+      <div class="game-card">
+        <div class="game-image"><img src="https://i.ytimg.com/vi/wXsG1d9TzdI/maxresdefault.jpg" alt="Polytrack" /></div>
+        <div class="game-name">Polytrack</div>
+      </div>
+    </a>
+
+    <a href="https://zearnhaas.github.io/racesurvival/" class="game-link">
+      <div class="game-card">
+        <div class="game-image"><img src="https://avatars.mds.yandex.net/get-vh/5634303/2a0000018d6537255c56baad4b6c73cf6957/orig" alt="Race Survival" /></div>
+        <div class="game-name">Race Survival</div>
+      </div>
+    </a>
+
+    <a href="https://zearnhaas.github.io/retro-bowl/" class="game-link">
+      <div class="game-card">
+        <div class="game-image"><img src="https://assets.nintendo.com/image/upload/ar_16:9,c_lpad,w_1240/b_white/f_auto/q_auto/ncom/software/switch/70010000048336/e3c1297d2ec30fe72a657af60c416d10c68a784bc874cf28e19cdf9261956919" alt="Retro Bowl" /></div>
+        <div class="game-name">Retro Bowl</div>
+      </div>
+    </a>
+
+    <a href="https://zearnhaas.github.io/slope/" class="game-link">
+      <div class="game-card">
+        <div class="game-image"><img src="https://1games.io/data/image/game/slope/slope.jpg" alt="Slope" /></div>
+        <div class="game-name">Slope</div>
+      </div>
+    </a>
+
+    <a href="https://zearnhaas.github.io/stickmanhook/" class="game-link">
+      <div class="game-card">
+        <div class="game-image"><img src="https://www.gearfuse.com/wp-content/uploads/2018/12/1-600x374.png" alt="Stickman Hook" /></div>
+        <div class="game-name">Stickman Hook</div>
+      </div>
+    </a>
+
+    <a href="https://zearnhaas.github.io/subway-surfers/" class="game-link">
+      <div class="game-card">
+        <div class="game-image"><img src="https://geometrydashwave.com/data/image/game/646379e8ff0a8d87404db507_SUBWAY_SURFERS_KEY_ART_1920x1080_LANDSCAPE_01.png" alt="Subway Surfers" /></div>
+        <div class="game-name">Subway Surfers</div>
+      </div>
+    </a>
+
+    <a href="https://zearnhaas.github.io/tunnel-rush/" class="game-link">
+      <div class="game-card">
+        <div class="game-image"><img src="https://parental-control.flashget.com/wp-content/uploads/sites/3/2025/04/Play-Tunnel-Rush-unblocked.jpg" alt="Tunnel Rush" /></div>
+        <div class="game-name">Tunnel Rush</div>
+      </div>
+    </a>
+
+  </div>
+</main>
+<footer>
+  Made with <3 by averageperson4. I don't own any of these games. This site is maintained especially for HAAS network restrictions.<br />
+  <a href="https://docs.google.com/forms/d/1xE5A3uYYN02mKgWIO0--GJwjwLFjWhrm-p0ewwLbSYk/" target="_blank" rel="noopener" style="color: #4da6ff; text-decoration: underline;">
+    Request a Game/Feedback
+  </a>
+</footer>
+
+<script>
+  // Open Google Classroom in a new tab
+  function openGoogleClassroomTab() {
+    window.open('https://classroom.google.com', '_blank');
+  }
+
+  // Overwrite current page with bypass iframe and overlay
+  function overwriteCurrentTabWithIframe(url) {
+    sessionStorage.setItem('isBypassed', 'true');
+
     const iframeHTML = `
       <!DOCTYPE html>
-      <html style="margin:0; height:100%; overflow:hidden;">
+      <html style="margin:0; height:100%; overflow:hidden; background: #1e1e1e; color: white; font-family: sans-serif;">
       <head><title>Bypass Tab</title></head>
-      <body style="margin:0; height:100%; font-family: sans-serif; background: #1e1e1e; color: white;">
-        <div style="position: absolute; top: 10px; left: 10px; z-index: 9999;">
-          <div style="background: green; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-            GoGuardian bypassed successfully!!
-          </div>
-          <button onclick="document.getElementById('bypass-frame').src='https://zearnhaas.github.io'" 
-                  style="padding: 8px 12px; background: #4da6ff; color: white; border: none; border-radius: 5px; cursor: pointer;">
-            Go Home
-          </button>
+      <body style="margin:0; height:100%; position: relative;">
+        <div id="overlay" style="
+          position: absolute; top: 10px; left: 10px; z-index: 9999;
+          display: flex; flex-direction: column; gap: 10px;
+          color: white;
+          user-select: none;
+        ">
+          <div id="success-icon" style="
+            background: green; border-radius: 50%; width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: default;
+            transition: width 0.3s ease, padding 0.3s ease;
+            padding: 0;
+            overflow: hidden;
+            white-space: nowrap;
+          " title="GoGuardian bypassed successfully!">✔️</div>
+
+          <button id="go-home-btn" style="
+            background: #4da6ff; color: white; border: none; border-radius: 5px;
+            width: 36px; height: 36px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0;
+            overflow: hidden;
+            white-space: nowrap;
+            transition: width 0.3s ease, padding 0.3s ease;
+          " title="Go Home">🏠</button>
         </div>
+
         <iframe id="bypass-frame" src="${url}" style="border:none; width:100vw; height:100vh;"></iframe>
+
+        <script>
+          const successIcon = document.getElementById('success-icon');
+          const goHomeBtn = document.getElementById('go-home-btn');
+
+          successIcon.addEventListener('mouseenter', () => {
+            successIcon.style.width = 'auto';
+            successIcon.style.padding = '0 10px';
+            successIcon.textContent = 'GoGuardian bypassed successfully!!';
+          });
+          successIcon.addEventListener('mouseleave', () => {
+            successIcon.style.width = '36px';
+            successIcon.style.padding = '0';
+            successIcon.textContent = '✔️';
+          });
+
+          goHomeBtn.addEventListener('mouseenter', () => {
+            goHomeBtn.style.width = 'auto';
+            goHomeBtn.style.padding = '0 12px';
+            goHomeBtn.textContent = 'Go Home';
+          });
+          goHomeBtn.addEventListener('mouseleave', () => {
+            goHomeBtn.style.width = '36px';
+            goHomeBtn.style.padding = '0';
+            goHomeBtn.textContent = '🏠';
+          });
+
+          goHomeBtn.addEventListener('click', () => {
+            document.getElementById('bypass-frame').src = 'https://zearnhaas.github.io';
+          });
+        <\/script>
       </body>
       </html>
     `;
+
     document.open();
     document.write(iframeHTML);
     document.close();
   }
 
-  // Attach event listener after DOM content is fully loaded
-  document.addEventListener('DOMContentLoaded', () => {
-    const bypassLink = document.getElementById('bypass-link');
-    if (bypassLink) {
-      bypassLink.addEventListener('click', e => {
-        e.preventDefault();
-        openGoogleClassroomTab();
-        overwriteCurrentTabWithBypass('https://zearnhaas.github.io');
-      });
+  // Hide bypass option if already bypassed
+  window.addEventListener('load', () => {
+    if (sessionStorage.getItem('isBypassed') === 'true') {
+      const bypassContainer = document.getElementById('bypass-container');
+      if (bypassContainer) bypassContainer.style.display = 'none';
     }
   });
+
+  // Setup click handler
+  const bypassLink = document.getElementById('bypass-link');
+  if (bypassLink) {
+    bypassLink.addEventListener('click', e => {
+      e.preventDefault();
+      openGoogleClassroomTab();
+      overwriteCurrentTabWithIframe('https://zearnhaas.github.io');
+    });
+  }
 </script>
 </body>
 </html>
