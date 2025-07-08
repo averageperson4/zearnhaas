@@ -19,10 +19,9 @@
     color: white;
     padding: 1.2rem 2rem;
     text-align: center;
-    position: relative;
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
   }
@@ -33,18 +32,31 @@
     letter-spacing: 1px;
   }
   #bypass-container {
-    font-size: 1rem;
-    max-width: 300px;
-    flex-shrink: 0;
-    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    max-width: 320px;
   }
-  #bypass-container .note {
-    margin-top: 4px;
-    color: #ccc;
+  #bypass-button {
+    background: #4da6ff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  #bypass-button:hover {
+    background: #3a8dde;
+  }
+  .note {
     font-size: 0.85rem;
-    line-height: 1.3;
-    max-width: 300px;
+    margin-top: 6px;
+    max-width: 280px;
+    text-align: right;
     white-space: normal;
+    line-height: 1.3;
   }
   main {
     max-width: 1200px;
@@ -103,27 +115,26 @@
     .games-grid {
       grid-template-columns: repeat(1, 1fr);
     }
+    #bypass-container {
+      align-items: center;
+      max-width: 100%;
+      text-align: center;
+    }
+    .note {
+      text-align: center;
+      max-width: 100%;
+    }
   }
 </style>
 </head>
 <body>
 <header>
-  <h1> billybobgames v2</h1>
+  <h1>billybobgames v2</h1>
   <div id="bypass-container">
-    <button onclick="handleBypass()" style="
-      background-color: #4CAF50;
-      color: white;
-      padding: 12px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    ">
-      Bypass GoGuardian
-    </button>
+    <button id="bypass-button">Bypass GoGuardian</button>
     <div class="note">
-      Stay on Google Classroom for five seconds, then click the bypass tab. You'll know you're bypassed when you see a checkmark.
+      Stay on Google Classroom for five seconds, then click the bypass tab.<br />
+      You'll know you're bypassed when you see a checkmark.
     </div>
   </div>
 </header>
@@ -231,15 +242,22 @@
 </footer>
 
 <script>
-  // Clear bypass flag on main page load so button shows again
-  sessionStorage.removeItem('isBypassed');
+  const bypassContainer = document.getElementById('bypass-container');
+  const bypassButton = document.getElementById('bypass-button');
 
-  // Open Google Classroom in a new tab
+  // Show or hide bypass UI based on sessionStorage flag
+  window.addEventListener('load', () => {
+    if (sessionStorage.getItem('isBypassed') === 'true') {
+      bypassContainer.style.display = 'none';
+    } else {
+      bypassContainer.style.display = 'flex';
+    }
+  });
+
   function openGoogleClassroomTab() {
     window.open('https://classroom.google.com', '_blank');
   }
 
-  // Overwrite current page with bypass iframe and overlay
   function overwriteCurrentTabWithIframe(url) {
     sessionStorage.setItem('isBypassed', 'true');
 
@@ -304,7 +322,8 @@
           });
 
           goHomeBtn.addEventListener('click', () => {
-            document.getElementById('bypass-frame').src = 'https://zearnhaas.github.io';
+            sessionStorage.removeItem('isBypassed');
+            window.location.href = '${window.location.origin}';
           });
         <\/script>
       </body>
@@ -316,11 +335,10 @@
     document.close();
   }
 
-  // The button click handler
-  function handleBypass() {
+  bypassButton.addEventListener('click', () => {
     openGoogleClassroomTab();
-    overwriteCurrentTabWithIframe('https://zearnhaas.github.io');
-  }
+    overwriteCurrentTabWithIframe(window.location.origin);
+  });
 </script>
 </body>
 </html>
