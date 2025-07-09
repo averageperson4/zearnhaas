@@ -1,253 +1,288 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Smart Proxy Loader</title>
-  <style>
-    /* Basic reset and body */
-    body, html {
-      margin: 0; padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: #1e1e1e;
-      color: white;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      user-select: none;
-    }
-
-    /* Canvas fills whole screen */
-    #particle-canvas {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    /* Loader UI container */
-    #loader, #error, #manual-chooser {
-      z-index: 1;
-      max-width: 90%;
-      text-align: center;
-      background: rgba(30, 30, 30, 0.85);
-      padding: 2rem 2.5rem;
-      border-radius: 12px;
-      box-shadow: 0 0 10px #4da6ff;
-    }
-
-    /* Loading bar */
-    .loading-bar {
-      width: 240px;
-      height: 6px;
-      background: #555;
-      margin: 1.25rem auto 0;
-      border-radius: 3px;
-      overflow: hidden;
-    }
-
-    .loading-fill {
-      width: 0%;
-      height: 100%;
-      background: #4da6ff;
-      animation: fill 2s infinite;
-    }
-
-    @keyframes fill {
-      0% { width: 0%; }
-      50% { width: 100%; }
-      100% { width: 0%; }
-    }
-
-    /* Status message below loading bar */
-    #status-message {
-      font-size: 0.9rem;
-      color: #ccc;
-      margin-top: 0.7rem;
-      min-height: 1.2rem;
-    }
-
-    /* Manual choose link */
-    a.manual {
-      display: inline-block;
-      color: #4da6ff;
-      margin-top: 1.5rem;
-      font-size: 0.9rem;
-      cursor: pointer;
-      text-decoration: underline;
-    }
-
-    /* Manual chooser list */
-    #manual-chooser ul {
-      list-style: none;
-      padding: 0;
-      margin-top: 1rem;
-    }
-
-    #manual-chooser li {
-      margin: 0.5rem 0;
-    }
-
-    #manual-chooser a {
-      color: #4da6ff;
-      cursor: pointer;
-      text-decoration: underline;
-      font-size: 1rem;
-    }
-
-    /* Error message */
-    #error a {
-      color: #4da6ff;
-      text-decoration: underline;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Proxy Loading</title>
+<style>
+  /* Base styling */
+  body, html {
+    margin: 0; padding: 0; height: 100%;
+    background: #2b2b2b;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+  }
+  #app {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+  }
+  h1 {
+    margin-bottom: 1rem;
+  }
+  #status-text {
+    margin: 0.5rem 0 1.2rem 0;
+    font-size: 1.1rem;
+  }
+  #loading-bar-container {
+    width: 80%;
+    max-width: 600px;
+    height: 20px;
+    background: #444;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: inset 0 0 5px #000;
+  }
+  #loading-bar {
+    height: 100%;
+    width: 0%;
+    background: #4da6ff;
+    transition: width 0.2s ease-out;
+  }
+  #manual-choice-btn {
+    margin-top: 1rem;
+    background: transparent;
+    border: none;
+    color: #4da6ff;
+    font-size: 0.95rem;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  #manual-choice-btn:hover {
+    color: #6db2ff;
+  }
+  #server-list {
+    margin-top: 1rem;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 80%;
+    max-width: 600px;
+    display: none;
+  }
+  #server-list button {
+    display: block;
+    width: 100%;
+    margin-bottom: 0.5rem;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    background: #3a3a3a;
+    color: #e0e0e0;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+  }
+  #server-list button:hover {
+    background: #4da6ff;
+  }
+  #fallback-message {
+    display: none;
+    margin-top: 2rem;
+    max-width: 600px;
+    padding: 1rem;
+    background: #661111;
+    border-radius: 8px;
+    color: #ffcccc;
+    text-align: center;
+    font-size: 1rem;
+  }
+  #fallback-message a {
+    color: #4da6ff;
+    text-decoration: underline;
+  }
+  /* Particle canvas styling */
+  #particles-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+  }
+</style>
 </head>
 <body>
-
-  <canvas id="particle-canvas"></canvas>
-
-  <div id="loader">
-    <h2>Finding the best proxy for you...</h2>
-    <div class="loading-bar"><div class="loading-fill"></div></div>
-    <p id="status-message">Starting server checks...</p>
-    <a class="manual" onclick="showManual()">Choose manually</a>
+<canvas id="particles-canvas"></canvas>
+<div id="app">
+  <h1>Finding the best proxy for you...</h1>
+  <div id="status-text">Starting checks...</div>
+  <div id="loading-bar-container"><div id="loading-bar"></div></div>
+  <button id="manual-choice-btn" style="display:none;">Choose manually</button>
+  <div id="server-list"></div>
+  <div id="fallback-message">
+    All servers are currently sleeping/down. Please wait as we try to wake them.<br/>
+    If this takes more than a minute, please send feedback <a href="https://docs.google.com/forms/d/1xE5A3uYYN02mKgWIO0--GJwjwLFjWhrm-p0ewwLbSYk/" target="_blank" rel="noopener">here</a>.
   </div>
-
-  <div id="error" style="display:none;">
-    <h2>All servers are currently sleeping/down.</h2>
-    <p>Please wait as we try to wake them. If this takes more than a minute, please send feedback in the <a href="https://docs.google.com/forms/d/1xE5A3uYYN02mKgWIO0--GJwjwLFjWhrm-p0ewwLbSYk/" target="_blank" rel="noopener noreferrer">feedback form</a>.</p>
-  </div>
-
-  <div id="manual-chooser" style="display:none;">
-    <h2>Choose a server manually:</h2>
-    <ul id="server-list">
-      <!-- Servers populated by JS -->
-    </ul>
-  </div>
+</div>
 
 <script>
+  // Servers to check — replace these URLs with your real proxies!
   const servers = [
-    'https://your-server-1.repl.co',
-    'https://your-server-2.repl.co',
-    'https://your-server-3.repl.co'
+    { name: "Server 1", url: "https://proxy1.example.com" },
+    { name: "Server 2", url: "https://proxy2.example.com" },
+    { name: "Server 3", url: "https://proxy3.example.com" },
   ];
 
-  let isConnected = false;
-
-  // UI elements
-  const loader = document.getElementById('loader');
-  const error = document.getElementById('error');
-  const manualChooser = document.getElementById('manual-chooser');
-  const statusMessage = document.getElementById('status-message');
+  const statusText = document.getElementById('status-text');
+  const loadingBar = document.getElementById('loading-bar');
+  const manualChoiceBtn = document.getElementById('manual-choice-btn');
   const serverList = document.getElementById('server-list');
+  const fallbackMessage = document.getElementById('fallback-message');
 
-  // Populate manual server list
-  function populateManualServers() {
-    serverList.innerHTML = '';
-    servers.forEach((url, i) => {
-      const li = document.createElement('li');
-      const a = document.createElement('a');
-      a.textContent = `Server ${i + 1}`;
-      a.href = '#';
-      a.onclick = (e) => {
-        e.preventDefault();
-        connectTo(url);
-      };
-      li.appendChild(a);
-      serverList.appendChild(li);
-    });
+  let isChecking = false;
+  let connectedServer = null;
+
+  // Utility: delay helper
+  function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  // Show manual server chooser
-  function showManual() {
-    loader.style.display = 'none';
-    error.style.display = 'none';
-    manualChooser.style.display = 'block';
-    populateManualServers();
-  }
-
-  // Show fallback error
-  function showFallback() {
-    loader.style.display = 'none';
-    manualChooser.style.display = 'none';
-    error.style.display = 'block';
-  }
-
-  // Check if server is online by HEAD request (ignore CORS)
-  async function checkServer(server, i) {
-    statusMessage.textContent = `Checking Server ${i + 1}...`;
+  // Simulate checking server by trying fetch with timeout (replace with your own check logic)
+  async function checkServer(server) {
     try {
-      // Using no-cors mode; can't read response but if fetch resolves, server is up
-      await fetch(server + '/uv/service', { method: 'HEAD', mode: 'no-cors' });
-      return true;
+      // Ping the server URL with timeout 3s
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      const response = await fetch(server.url, { method: 'HEAD', signal: controller.signal });
+      clearTimeout(timeoutId);
+      return response.ok;
     } catch {
       return false;
     }
   }
 
-  // Ping all servers in background every 30 seconds to keep awake
-  function startPingLoop() {
-    setInterval(() => {
-      servers.forEach(s => {
-        fetch(s + '/uv/service', { method: 'HEAD', mode: 'no-cors' }).catch(() => {});
-      });
+  // Simulate waking server (stub, replace with your actual wake call if any)
+  async function tryWakeServer(server) {
+    // Optionally call an endpoint to wake the server; here just wait 1s and try again
+    await delay(1000);
+    return checkServer(server);
+  }
+
+  // Animate loading bar smoothly from fromPercent to toPercent over duration ms
+  function animateLoadingBar(fromPercent, toPercent, duration) {
+    return new Promise(resolve => {
+      const startTime = performance.now();
+      function animate(time) {
+        const elapsed = time - startTime;
+        if (elapsed >= duration) {
+          loadingBar.style.width = toPercent + '%';
+          resolve();
+          return;
+        }
+        const progress = elapsed / duration;
+        const currentPercent = fromPercent + (toPercent - fromPercent) * progress;
+        loadingBar.style.width = currentPercent + '%';
+        requestAnimationFrame(animate);
+      }
+      requestAnimationFrame(animate);
+    });
+  }
+
+  async function checkServersSequentially() {
+    if (isChecking) return;
+    isChecking = true;
+    fallbackMessage.style.display = 'none';
+    serverList.style.display = 'none';
+    manualChoiceBtn.style.display = 'none';
+    connectedServer = null;
+    loadingBar.style.width = '0%';
+
+    for (let i = 0; i < servers.length; i++) {
+      const server = servers[i];
+      statusText.textContent = `Checking ${server.name}... (${i + 1}/${servers.length})`;
+      await animateLoadingBar((i / servers.length) * 100, ((i + 1) / servers.length) * 100, 1200);
+
+      let alive = await checkServer(server);
+      if (!alive) {
+        statusText.textContent = `Waking ${server.name}...`;
+        alive = await tryWakeServer(server);
+      }
+      if (alive) {
+        connectedServer = server;
+        break;
+      }
+      await delay(500);
+    }
+
+    if (connectedServer) {
+      statusText.textContent = `Connected to ${connectedServer.name}. Loading proxy...`;
+      startProxy(connectedServer);
+      startRetryingServers();
+    } else {
+      fallbackMessage.style.display = 'block';
+      statusText.textContent = '';
+      manualChoiceBtn.style.display = 'inline';
+    }
+    isChecking = false;
+  }
+
+  // Start iframe proxy loading
+  function startProxy(server) {
+    const iframe = document.createElement('iframe');
+    iframe.src = server.url;
+    iframe.style.position = 'fixed';
+    iframe.style.top = 0;
+    iframe.style.left = 0;
+    iframe.style.width = '100vw';
+    iframe.style.height = '100vh';
+    iframe.style.border = 'none';
+    iframe.style.zIndex = 100;
+    document.body.appendChild(iframe);
+    // Hide the UI once loaded
+    document.getElementById('app').style.display = 'none';
+  }
+
+  // Retry servers every 30 seconds in background
+  function startRetryingServers() {
+    setInterval(async () => {
+      for (const server of servers) {
+        const alive = await checkServer(server);
+        if (!alive) {
+          await tryWakeServer(server);
+        }
+      }
     }, 30000);
   }
 
-  // Connect iframe to proxy server and start ping loop
-  function connectTo(server) {
-    if (isConnected) return;
-    isConnected = true;
-    sessionStorage.setItem('proxyConnected', 'true');
-    sessionStorage.setItem('proxyServer', server);
+  // Manual server list UI
+  manualChoiceBtn.addEventListener('click', () => {
+    manualChoiceBtn.style.display = 'none';
+    serverList.innerHTML = '';
+    serverList.style.display = 'block';
+    servers.forEach(server => {
+      const btn = document.createElement('button');
+      btn.textContent = server.name;
+      btn.addEventListener('click', () => {
+        connectedServer = server;
+        statusText.textContent = `Manually connected to ${server.name}. Loading proxy...`;
+        fallbackMessage.style.display = 'none';
+        serverList.style.display = 'none';
+        startProxy(server);
+        startRetryingServers();
+      });
+      serverList.appendChild(btn);
+    });
+  });
 
-    document.body.innerHTML = `<iframe src="${server}" style="width:100vw; height:100vh; border:none;"></iframe>`;
-    startPingLoop();
-  }
-
-  // Attempt to find an available server and connect
-  async function findAndConnect() {
-    for (let i = 0; i < servers.length; i++) {
-      statusMessage.textContent = `Checking Server ${i + 1}...`;
-      let up = await checkServer(servers[i], i);
-      if (up) {
-        statusMessage.textContent = `Connecting to Server ${i + 1}...`;
-        connectTo(servers[i]);
-        return;
-      } else {
-        statusMessage.textContent = `Waking up Server ${i + 1}...`;
-      }
-    }
-    showFallback();
-  }
-
-  // On page load, try to connect if already connected or find server
+  // Start the checks automatically on page load
   window.onload = () => {
-    if (sessionStorage.getItem('proxyConnected') === 'true') {
-      const savedServer = sessionStorage.getItem('proxyServer') || servers[0];
-      connectTo(savedServer);
-    } else {
-      findAndConnect();
-    }
+    checkServersSequentially();
   };
 
+  /* --------
+    PARTICLES BACKGROUND - EXACTLY THE SAME NON-REACTIVE PARTICLES AS MAIN SITE
+    -------- */
 
-  // ---------------------------
-  // PARTICLES BACKGROUND
-  // ---------------------------
-
-  const canvas = document.getElementById('particle-canvas');
+  const canvas = document.getElementById('particles-canvas');
   const ctx = canvas.getContext('2d');
   let width, height;
+  const particlesCount = 70;
   let particles = [];
-  let mouse = { x: null, y: null };
 
   function resize() {
     width = window.innerWidth;
@@ -255,70 +290,43 @@
     canvas.width = width;
     canvas.height = height;
   }
-
   window.addEventListener('resize', resize);
   resize();
 
-  // Particle class
   class Particle {
     constructor() {
       this.reset();
     }
-
     reset() {
       this.x = Math.random() * width;
       this.y = Math.random() * height;
-      this.vx = (Math.random() - 0.5) * 0.4;
-      this.vy = (Math.random() - 0.5) * 0.4;
       this.size = 2 + Math.random() * 2;
-      this.baseSize = this.size;
-      this.color = 'rgba(77, 166, 255, 0.8)';
+      this.speedX = (Math.random() - 0.5) * 0.3;
+      this.speedY = (Math.random() - 0.5) * 0.3;
+      this.alpha = 0.3 + Math.random() * 0.3;
     }
-
     update() {
-      this.x += this.vx;
-      this.y += this.vy;
+      this.x += this.speedX;
+      this.y += this.speedY;
 
-      // Bounce off edges
-      if (this.x < 0 || this.x > width) this.vx *= -1;
-      if (this.y < 0 || this.y > height) this.vy *= -1;
-
-      // React to mouse
-      if (mouse.x !== null && mouse.y !== null) {
-        let dx = this.x - mouse.x;
-        let dy = this.y - mouse.y;
-        let dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < 100) {
-          let scale = (100 - dist) / 100;
-          this.size = this.baseSize + scale * 3;
-        } else {
-          this.size += (this.baseSize - this.size) * 0.1;
-        }
-      }
+      if (this.x < 0 || this.x > width) this.speedX *= -1;
+      if (this.y < 0 || this.y > height) this.speedY *= -1;
     }
-
     draw() {
       ctx.beginPath();
-      ctx.fillStyle = this.color;
-      ctx.shadowColor = '#4da6ff';
-      ctx.shadowBlur = 6;
       ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(77, 166, 255, ${this.alpha})`;
       ctx.fill();
     }
   }
 
-  // Create particles
-  function createParticles(count = 100) {
+  function initParticles() {
     particles = [];
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < particlesCount; i++) {
       particles.push(new Particle());
     }
   }
 
-  createParticles();
-
-  // Animate loop
   function animate() {
     ctx.clearRect(0, 0, width, height);
     particles.forEach(p => {
@@ -328,21 +336,8 @@
     requestAnimationFrame(animate);
   }
 
+  initParticles();
   animate();
-
-  // Track mouse move
-  window.addEventListener('mousemove', (e) => {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-  });
-
-  // Reset mouse if leaves window
-  window.addEventListener('mouseleave', () => {
-    mouse.x = null;
-    mouse.y = null;
-  });
-
 </script>
-
 </body>
 </html>
