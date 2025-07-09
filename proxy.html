@@ -3,341 +3,152 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Proxy Loading</title>
+<title>Proxy Loader - billybobgames</title>
 <style>
-  /* Base styling */
-  body, html {
-    margin: 0; padding: 0; height: 100%;
+  body {
     background: #2b2b2b;
     color: #e0e0e0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    overflow: hidden;
-  }
-  #app {
-    position: relative;
+    margin: 0;
     height: 100vh;
-    width: 100vw;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 10;
   }
-  h1 {
-    margin-bottom: 1rem;
-  }
-  #status-text {
-    margin: 0.5rem 0 1.2rem 0;
-    font-size: 1.1rem;
-  }
-  #loading-bar-container {
-    width: 80%;
-    max-width: 600px;
-    height: 20px;
-    background: #444;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: inset 0 0 5px #000;
+  #loading-container {
+    width: 90%;
+    max-width: 480px;
+    text-align: center;
   }
   #loading-bar {
-    height: 100%;
+    height: 6px;
     width: 0%;
     background: #4da6ff;
-    transition: width 0.2s ease-out;
+    border-radius: 4px;
+    transition: width 0.2s ease;
+    margin-top: 10px;
   }
-  #manual-choice-btn {
-    margin-top: 1rem;
-    background: transparent;
-    border: none;
-    color: #4da6ff;
-    font-size: 0.95rem;
-    cursor: pointer;
-    text-decoration: underline;
-  }
-  #manual-choice-btn:hover {
-    color: #6db2ff;
-  }
-  #server-list {
-    margin-top: 1rem;
-    max-height: 200px;
-    overflow-y: auto;
-    width: 80%;
-    max-width: 600px;
-    display: none;
-  }
-  #server-list button {
-    display: block;
-    width: 100%;
-    margin-bottom: 0.5rem;
-    padding: 0.6rem 1rem;
-    font-size: 1rem;
-    background: #3a3a3a;
-    color: #e0e0e0;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    text-align: left;
-  }
-  #server-list button:hover {
-    background: #4da6ff;
+  #loading-text {
+    margin-top: 12px;
+    font-size: 1.1rem;
   }
   #fallback-message {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #ccc;
     display: none;
-    margin-top: 2rem;
-    max-width: 600px;
-    padding: 1rem;
-    background: #661111;
-    border-radius: 8px;
-    color: #ffcccc;
-    text-align: center;
-    font-size: 1rem;
   }
-  #fallback-message a {
+  #manual-select {
+    margin-top: 15px;
     color: #4da6ff;
+    cursor: pointer;
     text-decoration: underline;
+    display: none;
+    user-select: none;
   }
-  /* Particle canvas styling */
-  #particles-canvas {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1;
+  #manual-select:hover {
+    color: #a3c9ff;
   }
 </style>
 </head>
 <body>
-<canvas id="particles-canvas"></canvas>
-<div id="app">
-  <h1>Finding the best proxy for you...</h1>
-  <div id="status-text">Starting checks...</div>
-  <div id="loading-bar-container"><div id="loading-bar"></div></div>
-  <button id="manual-choice-btn" style="display:none;">Choose manually</button>
-  <div id="server-list"></div>
+
+<div id="loading-container">
+  <div id="loading-text">Finding the best proxy for you...</div>
+  <div id="loading-bar"></div>
   <div id="fallback-message">
-    All servers are currently sleeping/down. Please wait as we try to wake them.<br/>
-    If this takes more than a minute, please send feedback <a href="https://docs.google.com/forms/d/1xE5A3uYYN02mKgWIO0--GJwjwLFjWhrm-p0ewwLbSYk/" target="_blank" rel="noopener">here</a>.
+    All servers are currently sleeping/down.<br />
+    Please wait as we try to wake them.<br />
+    If this takes more than a minute, please send feedback <a href="https://docs.google.com/forms/d/1xE5A3uYYN02mKgWIO0--GJwjwLFjWhrm-p0ewwLbSYk/" target="_blank" style="color: #4da6ff; text-decoration: underline;">here</a>.
   </div>
+  <div id="manual-select">Choose a server manually</div>
 </div>
 
 <script>
-  // Servers to check — replace these URLs with your real proxies!
+  // List your proxy servers here (must support CORS or use no-cors fetch)
   const servers = [
-    { name: "Server 1", url: "https://proxy1.example.com" },
-    { name: "Server 2", url: "https://proxy2.example.com" },
-    { name: "Server 3", url: "https://proxy3.example.com" },
+    'https://proxy1.example.com/',
+    'https://proxy2.example.com/',
+    'https://proxy3.example.com/',
   ];
 
-  const statusText = document.getElementById('status-text');
-  const loadingBar = document.getElementById('loading-bar');
-  const manualChoiceBtn = document.getElementById('manual-choice-btn');
-  const serverList = document.getElementById('server-list');
-  const fallbackMessage = document.getElementById('fallback-message');
-
-  let isChecking = false;
   let connectedServer = null;
+  let serverStatus = {};
+  const retryInterval = 30000; // 30 seconds
 
-  // Utility: delay helper
-  function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
+  const loadingText = document.getElementById('loading-text');
+  const loadingBar = document.getElementById('loading-bar');
+  const fallbackMessage = document.getElementById('fallback-message');
+  const manualSelectLink = document.getElementById('manual-select');
 
-  // Simulate checking server by trying fetch with timeout (replace with your own check logic)
-  async function checkServer(server) {
-    try {
-      // Ping the server URL with timeout 3s
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000);
-      const response = await fetch(server.url, { method: 'HEAD', signal: controller.signal });
-      clearTimeout(timeoutId);
-      return response.ok;
-    } catch {
-      return false;
-    }
-  }
-
-  // Simulate waking server (stub, replace with your actual wake call if any)
-  async function tryWakeServer(server) {
-    // Optionally call an endpoint to wake the server; here just wait 1s and try again
-    await delay(1000);
-    return checkServer(server);
-  }
-
-  // Animate loading bar smoothly from fromPercent to toPercent over duration ms
-  function animateLoadingBar(fromPercent, toPercent, duration) {
-    return new Promise(resolve => {
-      const startTime = performance.now();
-      function animate(time) {
-        const elapsed = time - startTime;
-        if (elapsed >= duration) {
-          loadingBar.style.width = toPercent + '%';
-          resolve();
-          return;
-        }
-        const progress = elapsed / duration;
-        const currentPercent = fromPercent + (toPercent - fromPercent) * progress;
-        loadingBar.style.width = currentPercent + '%';
-        requestAnimationFrame(animate);
-      }
-      requestAnimationFrame(animate);
-    });
-  }
-
-  async function checkServersSequentially() {
-    if (isChecking) return;
-    isChecking = true;
-    fallbackMessage.style.display = 'none';
-    serverList.style.display = 'none';
-    manualChoiceBtn.style.display = 'none';
+  function resetUI() {
     connectedServer = null;
+    serverStatus = {};
+    fallbackMessage.style.display = 'none';
+    manualSelectLink.style.display = 'none';
     loadingBar.style.width = '0%';
+    loadingBar.style.height = '6px'; // normal height
+    loadingText.textContent = 'Finding the best proxy for you...';
+  }
+
+  function pingServer(url) {
+    return fetch(url, {mode: 'no-cors'})
+      .then(() => true)
+      .catch(() => false);
+  }
+
+  async function findWorkingServer() {
+    resetUI();
 
     for (let i = 0; i < servers.length; i++) {
-      const server = servers[i];
-      statusText.textContent = `Checking ${server.name}... (${i + 1}/${servers.length})`;
-      await animateLoadingBar((i / servers.length) * 100, ((i + 1) / servers.length) * 100, 1200);
+      loadingText.textContent = `Checking server ${i + 1} of ${servers.length}...`;
+      loadingBar.style.width = `${(i / servers.length) * 100}%`;
 
-      let alive = await checkServer(server);
-      if (!alive) {
-        statusText.textContent = `Waking ${server.name}...`;
-        alive = await tryWakeServer(server);
+      let isUp = await pingServer(servers[i]);
+      serverStatus[servers[i]] = isUp;
+
+      if (isUp) {
+        connectedServer = servers[i];
+        loadingText.textContent = `Connected to server ${i + 1}`;
+        loadingBar.style.width = '100%';
+        manualSelectLink.style.display = 'inline-block';
+        startBackgroundPings();
+        // TODO: add logic here to load iframe or redirect to the working proxy
+        return;
+      } else {
+        await new Promise(r => setTimeout(r, 150)); // faster delay
       }
-      if (alive) {
-        connectedServer = server;
-        break;
-      }
-      await delay(500);
     }
 
-    if (connectedServer) {
-      statusText.textContent = `Connected to ${connectedServer.name}. Loading proxy...`;
-      startProxy(connectedServer);
-      startRetryingServers();
-    } else {
-      fallbackMessage.style.display = 'block';
-      statusText.textContent = '';
-      manualChoiceBtn.style.display = 'inline';
-    }
-    isChecking = false;
+    // Fallback if no servers connected
+    loadingText.textContent = 'All servers are currently sleeping/down. Please wait as we try to wake them. If this takes more than a minute, please send feedback.';
+    fallbackMessage.style.display = 'block';
+    manualSelectLink.style.display = 'inline-block';
+
+    loadingBar.style.width = '50%';
+    loadingBar.style.height = '3px';
+
+    setTimeout(findWorkingServer, retryInterval);
   }
 
-  // Start iframe proxy loading
-  function startProxy(server) {
-    const iframe = document.createElement('iframe');
-    iframe.src = server.url;
-    iframe.style.position = 'fixed';
-    iframe.style.top = 0;
-    iframe.style.left = 0;
-    iframe.style.width = '100vw';
-    iframe.style.height = '100vh';
-    iframe.style.border = 'none';
-    iframe.style.zIndex = 100;
-    document.body.appendChild(iframe);
-    // Hide the UI once loaded
-    document.getElementById('app').style.display = 'none';
-  }
-
-  // Retry servers every 30 seconds in background
-  function startRetryingServers() {
-    setInterval(async () => {
-      for (const server of servers) {
-        const alive = await checkServer(server);
-        if (!alive) {
-          await tryWakeServer(server);
-        }
-      }
-    }, 30000);
-  }
-
-  // Manual server list UI
-  manualChoiceBtn.addEventListener('click', () => {
-    manualChoiceBtn.style.display = 'none';
-    serverList.innerHTML = '';
-    serverList.style.display = 'block';
-    servers.forEach(server => {
-      const btn = document.createElement('button');
-      btn.textContent = server.name;
-      btn.addEventListener('click', () => {
-        connectedServer = server;
-        statusText.textContent = `Manually connected to ${server.name}. Loading proxy...`;
-        fallbackMessage.style.display = 'none';
-        serverList.style.display = 'none';
-        startProxy(server);
-        startRetryingServers();
+  function startBackgroundPings() {
+    setInterval(() => {
+      servers.forEach(server => {
+        pingServer(server).then(isUp => {
+          serverStatus[server] = isUp;
+        });
       });
-      serverList.appendChild(btn);
-    });
+    }, retryInterval);
+  }
+
+  manualSelectLink.addEventListener('click', () => {
+    alert('Manual server selection menu coming soon!');
+    // You can implement a dropdown or popup with server list here.
   });
 
-  // Start the checks automatically on page load
-  window.onload = () => {
-    checkServersSequentially();
-  };
-
-  /* --------
-    PARTICLES BACKGROUND - EXACTLY THE SAME NON-REACTIVE PARTICLES AS MAIN SITE
-    -------- */
-
-  const canvas = document.getElementById('particles-canvas');
-  const ctx = canvas.getContext('2d');
-  let width, height;
-  const particlesCount = 70;
-  let particles = [];
-
-  function resize() {
-    width = window.innerWidth;
-    height = window.innerHeight;
-    canvas.width = width;
-    canvas.height = height;
-  }
-  window.addEventListener('resize', resize);
-  resize();
-
-  class Particle {
-    constructor() {
-      this.reset();
-    }
-    reset() {
-      this.x = Math.random() * width;
-      this.y = Math.random() * height;
-      this.size = 2 + Math.random() * 2;
-      this.speedX = (Math.random() - 0.5) * 0.3;
-      this.speedY = (Math.random() - 0.5) * 0.3;
-      this.alpha = 0.3 + Math.random() * 0.3;
-    }
-    update() {
-      this.x += this.speedX;
-      this.y += this.speedY;
-
-      if (this.x < 0 || this.x > width) this.speedX *= -1;
-      if (this.y < 0 || this.y > height) this.speedY *= -1;
-    }
-    draw() {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(77, 166, 255, ${this.alpha})`;
-      ctx.fill();
-    }
-  }
-
-  function initParticles() {
-    particles = [];
-    for (let i = 0; i < particlesCount; i++) {
-      particles.push(new Particle());
-    }
-  }
-
-  function animate() {
-    ctx.clearRect(0, 0, width, height);
-    particles.forEach(p => {
-      p.update();
-      p.draw();
-    });
-    requestAnimationFrame(animate);
-  }
-
-  initParticles();
-  animate();
+  window.addEventListener('load', findWorkingServer);
 </script>
+
 </body>
 </html>
