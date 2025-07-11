@@ -5,7 +5,4 @@ To do:
 
 
 
--fix the issue where game preview images are cropped on some devices
-
-
--add a fancy reactive backround with a toggle for low end devices
+-make the smart proxy site actually functional
