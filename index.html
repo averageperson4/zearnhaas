@@ -1,198 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>billybobgames - Google Classroom Sign In</title>
-<style>
-  body {
-    margin: 0; 
-    background: #2b2b2b; 
-    color: #e0e0e0; 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    overflow: hidden;
-    position: relative;
-  }
-  #tsparticles {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 0;
-    pointer-events: none;
-  }
-  main {
-    position: relative;
-    z-index: 10;
-    max-width: 480px;
-    margin: 120px auto 0;
-    text-align: center;
-  }
-  h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-  }
-  .note {
-    margin-bottom: 2rem;
-    font-size: 1rem;
-    color: #bbb;
-  }
-  button {
-    cursor: pointer;
-    font-size: 1.2rem;
-    padding: 14px 28px;
-    margin: 0 12px;
-    border-radius: 8px;
-    border: none;
-    color: white;
-    background-color: #4da6ff;
-    transition: background-color 0.3s ease;
-    user-select: none;
-  }
-  button:hover {
-    background-color: #3a8dde;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Google Classroom Home</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #2b2b2b;
+      color: #ffffff;
+      overflow: hidden;
+    }
+    header {
+      background-color: #3a3a3a;
+      color: white;
+      padding: 1.5rem 2rem;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      position: relative;
+      z-index: 10;
+    }
+    main {
+      text-align: center;
+      margin-top: 2rem;
+      position: relative;
+      z-index: 10;
+    }
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+    button {
+      background: #4da6ff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.8rem 1.6rem;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #3a8dde;
+    }
+    #tsparticles {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
+    }
+  </style>
 </head>
 <body>
+  <div id="tsparticles"></div>
 
-<div id="tsparticles"></div>
+  <header>Google Classroom Sign In</header>
 
-<main>
-  <h1>Google Classroom Sign In</h1>
-  <div class="note">Choose an option below to continue</div>
-  <button id="bypass-btn">GoGuardian Bypass</button>
-  <button id="continue-btn">Continue Unbypassed</button>
-</main>
+  <main>
+    <div class="button-container">
+      <button onclick="handleBypass()">GoGuardian Bypass</button>
+      <button onclick="window.location.href='site.html'">Continue Unbypassed</button>
+    </div>
+  </main>
 
-<script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
-<script>
-  tsParticles.load("tsparticles", {
-    fullScreen: { enable: false },
-    fpsLimit: 60,
-    interactivity: {
-      events: { onHover: { enable: false }, resize: true },
-    },
-    particles: {
-      color: { value: "#4da6ff" },
-      links: { color: "#4da6ff", distance: 120, enable: true, opacity: 0.2, width: 1 },
-      move: { enable: true, speed: 1, outModes: { default: "bounce" } },
-      number: { value: 40, density: { enable: true, area: 800 } },
-      opacity: { value: 0.3 },
-      shape: { type: "circle" },
-      size: { value: { min: 1, max: 4 } },
-    },
-    detectRetina: true
-  });
-</script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
+  <script>
+    tsParticles.load("tsparticles", {
+      fullScreen: { enable: false },
+      fpsLimit: 60,
+      interactivity: {
+        events: { onHover: { enable: true, mode: "repulse" }, resize: true },
+        modes: { repulse: { distance: 100, duration: 0.4 } }
+      },
+      particles: {
+        color: { value: "#4da6ff" },
+        links: {
+          color: "#4da6ff",
+          distance: 120,
+          enable: true,
+          opacity: 0.2,
+          width: 1
+        },
+        move: {
+          enable: true,
+          speed: 1,
+          direction: "none",
+          random: false,
+          straight: false,
+          outModes: { default: "bounce" }
+        },
+        number: {
+          density: { enable: true, area: 800 },
+          value: 40
+        },
+        opacity: { value: 0.3 },
+        shape: { type: "circle" },
+        size: { value: { min: 1, max: 4 } }
+      },
+      detectRetina: true
+    });
+  </script>
 
-<script>
-  const bypassBtn = document.getElementById('bypass-btn');
-  const continueBtn = document.getElementById('continue-btn');
+  <script>
+    function handleBypass() {
+      // Open about:blank in the same gesture
+      const newTab = window.open('about:blank', '_blank');
 
-  bypassBtn.addEventListener('click', () => {
-    // Redirect current tab to Google Classroom with updated title
-    document.title = "Google Classroom Home";
-    window.location.href = 'https://classroom.google.com';
+      if (!newTab) {
+        alert("Popup blocked! Please allow popups and try again.");
+        return;
+      }
 
-    // Immediately open about:blank tab with iframe+overlay loading site.html
-    const newTab = window.open('about:blank', '_blank');
-    if (!newTab) {
-      alert('Popup blocked! Please allow popups for this site to use the bypass.');
-      return;
-    }
-
-    const iframeURL = window.location.origin + '/site.html';
-    const htmlContent = `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>billybobgames - Bypassed</title>
-        <style>
-          html, body {
-            margin: 0; padding: 0; height: 100%; overflow: hidden;
-            background: #1e1e1e; color: white; font-family: sans-serif;
-          }
-          #overlay {
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html style="margin:0; height:100%; overflow:hidden; background:#1e1e1e; color:white; font-family:sans-serif;">
+        <head><title>Bypass Tab</title></head>
+        <body style="margin:0; height:100%; position:relative;">
+          <div id="overlay" style="
             position: absolute; top: 10px; left: 10px; z-index: 9999;
             display: flex; flex-direction: column; gap: 10px;
-            color: white;
-            user-select: none;
-          }
-          #success-icon {
-            background: green; border-radius: 50%; width: 36px; height: 36px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: default;
-            transition: width 0.3s ease, padding 0.3s ease;
-            padding: 0;
-            white-space: nowrap;
-            overflow: hidden;
-          }
-          #go-home-btn {
-            background: #4da6ff; color: white; border: none; border-radius: 5px;
-            width: 36px; height: 36px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            padding: 0;
-            white-space: nowrap;
-            overflow: hidden;
-            transition: width 0.3s ease, padding 0.3s ease;
-          }
-          iframe {
-            border: none;
-            width: 100vw;
-            height: 100vh;
-          }
-        </style>
-      </head>
-      <body>
-        <div id="overlay">
-          <div id="success-icon" title="GoGuardian bypassed successfully!">✔️</div>
-          <button id="go-home-btn" title="Go Home">🏠</button>
-        </div>
-        <iframe id="bypass-frame" src="${iframeURL}"></iframe>
-        <script>
-          const successIcon = document.getElementById('success-icon');
-          const goHomeBtn = document.getElementById('go-home-btn');
+            color: white; user-select: none;
+          ">
+            <div id="success-icon" style="
+              background: green; border-radius: 50%; width: 36px; height: 36px;
+              display: flex; align-items: center; justify-content: center;
+              cursor: default;
+              transition: width 0.3s ease, padding 0.3s ease;
+              padding: 0;
+              overflow: hidden;
+              white-space: nowrap;
+            " title="GoGuardian bypassed successfully!">✔️</div>
 
-          successIcon.addEventListener('mouseenter', () => {
-            successIcon.style.width = 'auto';
-            successIcon.style.padding = '0 10px';
-            successIcon.textContent = 'GoGuardian bypassed successfully!!';
-          });
-          successIcon.addEventListener('mouseleave', () => {
-            successIcon.style.width = '36px';
-            successIcon.style.padding = '0';
-            successIcon.textContent = '✔️';
-          });
+            <button id="go-home-btn" style="
+              background: #4da6ff; color: white; border: none; border-radius: 5px;
+              width: 36px; height: 36px; cursor: pointer;
+              display: flex; align-items: center; justify-content: center;
+              padding: 0;
+              overflow: hidden;
+              white-space: nowrap;
+              transition: width 0.3s ease, padding 0.3s ease;
+            " title="Go Home">🏠</button>
+          </div>
 
-          goHomeBtn.addEventListener('mouseenter', () => {
-            goHomeBtn.style.width = 'auto';
-            goHomeBtn.style.padding = '0 12px';
-            goHomeBtn.textContent = 'Go Home';
-          });
-          goHomeBtn.addEventListener('mouseleave', () => {
-            goHomeBtn.style.width = '36px';
-            goHomeBtn.style.padding = '0';
-            goHomeBtn.textContent = '🏠';
-          });
+          <iframe id="bypass-frame" src="${window.location.origin}/site.html" style="border:none; width:100vw; height:100vh;"></iframe>
 
-          goHomeBtn.addEventListener('click', () => {
-            document.getElementById('bypass-frame').src = '${iframeURL}';
-          });
-        <\/script>
-      </body>
-      </html>
-    `;
-    newTab.document.write(htmlContent);
-    newTab.document.close();
-  });
+          <script>
+            const successIcon = document.getElementById('success-icon');
+            const goHomeBtn = document.getElementById('go-home-btn');
 
-  continueBtn.addEventListener('click', () => {
-    window.location.href = 'site.html';
-  });
-</script>
+            successIcon.addEventListener('mouseenter', () => {
+              successIcon.style.width = 'auto';
+              successIcon.style.padding = '0 10px';
+              successIcon.textContent = 'GoGuardian bypassed successfully!!';
+            });
+            successIcon.addEventListener('mouseleave', () => {
+              successIcon.style.width = '36px';
+              successIcon.style.padding = '0';
+              successIcon.textContent = '✔️';
+            });
 
+            goHomeBtn.addEventListener('mouseenter', () => {
+              goHomeBtn.style.width = 'auto';
+              goHomeBtn.style.padding = '0 12px';
+              goHomeBtn.textContent = 'Go Home';
+            });
+            goHomeBtn.addEventListener('mouseleave', () => {
+              goHomeBtn.style.width = '36px';
+              goHomeBtn.style.padding = '0';
+              goHomeBtn.textContent = '🏠';
+            });
+
+            goHomeBtn.addEventListener('click', () => {
+              document.getElementById('bypass-frame').src = '${window.location.origin}/site.html';
+            });
+          <\/script>
+        </body>
+        </html>
+      `;
+
+      newTab.document.write(htmlContent);
+      newTab.document.close();
+
+      // Redirect current tab to Classroom
+      window.location.href = 'https://classroom.google.com';
+    }
+  </script>
 </body>
 </html>
