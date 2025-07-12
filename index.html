@@ -3,28 +3,25 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>billybobgames v2 - Google Classroom Sign In</title>
+<title>billybobgames v2 - Choose Access</title>
 <style>
   * {
     box-sizing: border-box;
   }
   body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #2b2b2b;
     color: #e0e0e0;
+    overflow: hidden;
     position: relative;
-    overflow-x: hidden;
   }
   header {
     background-color: #3a3a3a;
     color: white;
     padding: 1.2rem 2rem;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
     position: relative;
     z-index: 10;
   }
@@ -34,16 +31,19 @@
     font-size: 2rem;
     letter-spacing: 1px;
   }
-  #button-container {
-    display: flex;
-    gap: 1rem;
+  main {
+    max-width: 600px;
+    margin: 3rem auto 2rem auto;
+    text-align: center;
+    position: relative;
+    z-index: 10;
   }
   button {
     background: #4da6ff;
     border: none;
     border-radius: 6px;
-    padding: 10px 20px;
-    font-size: 1rem;
+    padding: 15px 40px;
+    font-size: 1.25rem;
     color: white;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -51,21 +51,22 @@
   button:hover {
     background: #3a8dde;
   }
-  main {
-    max-width: 800px;
-    margin: 4rem auto 2rem;
-    padding: 0 1rem;
-    text-align: center;
-    position: relative;
-    z-index: 10;
-  }
-  #desc {
+  a.continue-link {
+    display: inline-block;
+    margin-top: 1.5rem;
     font-size: 1.1rem;
-    color: #ccc;
-    margin-top: 1rem;
-    line-height: 1.4;
+    color: #4da6ff;
+    text-decoration: underline;
+    cursor: pointer;
   }
-  /* Particle background container */
+  p.note {
+    margin-top: 2.5rem;
+    font-size: 0.9rem;
+    color: #aaa;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
   #tsparticles {
     position: fixed;
     top: 0; left: 0;
@@ -74,44 +75,30 @@
     z-index: 1;
     pointer-events: none;
   }
-  @media (max-width: 600px) {
-    header {
-      justify-content: center;
-    }
-    #button-container {
-      flex-direction: column;
-      width: 100%;
-      max-width: 320px;
-      margin: 0 auto;
-    }
-    button {
-      width: 100%;
-    }
-  }
 </style>
 </head>
 <body>
 
-<!-- Particle background -->
+<!-- Particle background container -->
 <div id="tsparticles"></div>
 
 <header>
   <h1>billybobgames v2</h1>
-  <div id="button-container">
-    <button id="bypass-button">GoGuardian Bypass</button>
-    <button id="continue-button">Continue Unbypassed</button>
-  </div>
+  <!-- Proxy button can be added here later -->
 </header>
 
 <main>
-  <div id="desc">
-    Choose how you want to continue.<br />
-    Use "GoGuardian Bypass" if you want the site in a bypassed tab.<br />
-    Or "Continue Unbypassed" to proceed normally.
-  </div>
+  <p class="note">
+    Stay on Google Classroom for five seconds, then click the bypass tab.<br />
+    You'll know you're bypassed when you see a checkmark.
+  </p>
+
+  <button id="bypass-btn">GoGuardian Bypass</button>
+
+  <a href="site.html" class="continue-link">Continue Unbypassed</a>
 </main>
 
-<!-- Load tsparticles library from CDN -->
+<!-- tsparticles library -->
 <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
 <script>
   tsParticles.load("tsparticles", {
@@ -119,17 +106,8 @@
     fpsLimit: 60,
     interactivity: {
       events: {
-        onHover: {
-          enable: true,
-          mode: "repulse"
-        },
+        onHover: { enable: false },
         resize: true
-      },
-      modes: {
-        repulse: {
-          distance: 100,
-          duration: 0.4
-        }
       }
     },
     particles: {
@@ -160,24 +138,102 @@
 </script>
 
 <script>
-  const bypassButton = document.getElementById('bypass-button');
-  const continueButton = document.getElementById('continue-button');
+  const bypassBtn = document.getElementById('bypass-btn');
 
-  // When user clicks bypass, open Google Classroom in current tab for 5 seconds
-  // Then open new about:blank tab with bypass site (site.html with overlay)
-  bypassButton.addEventListener('click', () => {
-    // Redirect current tab to Google Classroom
+  bypassBtn.addEventListener('click', () => {
+    // Open about:blank tab with iframe embedding site.html + overlay UI
+    const bypassWindow = window.open('about:blank', '_blank', 'noopener,noreferrer');
+
+    if (bypassWindow) {
+      bypassWindow.document.write(`
+        <!DOCTYPE html>
+        <html style="margin:0; height:100%; overflow:hidden; background: #1e1e1e; color: white; font-family: sans-serif;">
+        <head>
+          <title>Bypassed Site</title>
+          <style>
+            body, html {
+              margin: 0; padding: 0; height: 100%; overflow: hidden;
+              background: #1e1e1e;
+              color: white;
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            #overlay {
+              position: absolute; top: 10px; left: 10px; z-index: 9999;
+              display: flex; flex-direction: column; gap: 10px;
+              color: white;
+              user-select: none;
+            }
+            #success-icon {
+              background: green; border-radius: 50%; width: 36px; height: 36px;
+              display: flex; align-items: center; justify-content: center;
+              cursor: default;
+              transition: width 0.3s ease, padding 0.3s ease;
+              padding: 0;
+              white-space: nowrap;
+              overflow: hidden;
+            }
+            #go-home-btn {
+              background: #4da6ff; color: white; border: none; border-radius: 5px;
+              width: 36px; height: 36px; cursor: pointer;
+              display: flex; align-items: center; justify-content: center;
+              padding: 0;
+              white-space: nowrap;
+              overflow: hidden;
+              transition: width 0.3s ease, padding 0.3s ease;
+            }
+            iframe {
+              border: none;
+              width: 100vw;
+              height: 100vh;
+              display: block;
+            }
+          </style>
+        </head>
+        <body>
+          <div id="overlay">
+            <div id="success-icon" title="GoGuardian bypassed successfully!">✔️</div>
+            <button id="go-home-btn" title="Go Home">🏠</button>
+          </div>
+          <iframe id="bypass-frame" src="site.html"></iframe>
+          <script>
+            const successIcon = document.getElementById('success-icon');
+            const goHomeBtn = document.getElementById('go-home-btn');
+            const iframe = document.getElementById('bypass-frame');
+
+            successIcon.addEventListener('mouseenter', () => {
+              successIcon.style.width = 'auto';
+              successIcon.style.padding = '0 10px';
+              successIcon.textContent = 'GoGuardian bypassed successfully!!';
+            });
+            successIcon.addEventListener('mouseleave', () => {
+              successIcon.style.width = '36px';
+              successIcon.style.padding = '0';
+              successIcon.textContent = '✔️';
+            });
+
+            goHomeBtn.addEventListener('mouseenter', () => {
+              goHomeBtn.style.width = 'auto';
+              goHomeBtn.style.padding = '0 12px';
+              goHomeBtn.textContent = 'Go Home';
+            });
+            goHomeBtn.addEventListener('mouseleave', () => {
+              goHomeBtn.style.width = '36px';
+              goHomeBtn.style.padding = '0';
+              goHomeBtn.textContent = '🏠';
+            });
+
+            goHomeBtn.addEventListener('click', () => {
+              iframe.src = 'site.html';
+            });
+          <\/script>
+        </body>
+        </html>
+      `);
+      bypassWindow.document.close();
+    }
+
+    // Redirect current tab to Google Classroom immediately
     window.location.href = 'https://classroom.google.com';
-
-    // After 5 seconds, open new tab with site.html in about:blank tab
-    setTimeout(() => {
-      window.open(window.location.origin + '/site.html', '_blank', 'noopener,noreferrer');
-    }, 5000);
-  });
-
-  // Continue unbypassed just redirects to site.html in current tab
-  continueButton.addEventListener('click', () => {
-    window.location.href = 'site.html';
   });
 </script>
 
