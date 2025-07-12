@@ -1,180 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Google Classroom Sign In</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      height: 100%;
-      background: #111;
-      font-family: Arial, sans-serif;
-      color: white;
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>billybobgames v2 - Google Classroom Sign In</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background: #2b2b2b;
+    color: #e0e0e0;
+    position: relative;
+    overflow-x: hidden;
+  }
+  header {
+    background-color: #3a3a3a;
+    color: white;
+    padding: 1.2rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    position: relative;
+    z-index: 10;
+  }
+  header h1 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 2rem;
+    letter-spacing: 1px;
+  }
+  #button-container {
+    display: flex;
+    gap: 1rem;
+  }
+  button {
+    background: #4da6ff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background: #3a8dde;
+  }
+  main {
+    max-width: 800px;
+    margin: 4rem auto 2rem;
+    padding: 0 1rem;
+    text-align: center;
+    position: relative;
+    z-index: 10;
+  }
+  #desc {
+    font-size: 1.1rem;
+    color: #ccc;
+    margin-top: 1rem;
+    line-height: 1.4;
+  }
+  /* Particle background container */
+  #tsparticles {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+  }
+  @media (max-width: 600px) {
+    header {
+      justify-content: center;
     }
-
-    canvas#particles {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: -1;
+    #button-container {
+      flex-direction: column;
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto;
     }
-
-    .container {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
+    button {
+      width: 100%;
     }
-
-    h1 {
-      font-size: 2em;
-      margin-bottom: 20px;
-    }
-
-    .button {
-      background-color: #2196F3;
-      color: white;
-      border: none;
-      padding: 15px 30px;
-      font-size: 1em;
-      margin: 10px;
-      cursor: pointer;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-
-    .button:hover {
-      background-color: #1976D2;
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
-  <canvas id="particles"></canvas>
-  <div class="container">
-    <h1>Google Classroom Sign In</h1>
-    <button class="button" onclick="bypass()">GoGuardian Bypass</button>
-    <button class="button" onclick="window.location.href='site.html'">Continue Unbypassed</button>
+
+<!-- Particle background -->
+<div id="tsparticles"></div>
+
+<header>
+  <h1>billybobgames v2</h1>
+  <div id="button-container">
+    <button id="bypass-button">GoGuardian Bypass</button>
+    <button id="continue-button">Continue Unbypassed</button>
   </div>
+</header>
 
-  <script>
-    function bypass() {
-      window.location.href = "https://classroom.google.com/";
-      setTimeout(() => {
-        const win = window.open("about:blank", "_blank");
-        const iframe = win.document.createElement("iframe");
-        iframe.src = "site.html";
-        iframe.style = "border:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;";
-        win.document.body.style.margin = "0";
-        win.document.body.appendChild(iframe);
+<main>
+  <div id="desc">
+    Choose how you want to continue.<br />
+    Use "GoGuardian Bypass" if you want the site in a bypassed tab.<br />
+    Or "Continue Unbypassed" to proceed normally.
+  </div>
+</main>
 
-        const overlay = win.document.createElement("div");
-        overlay.innerHTML = `
-          <style>
-            #overlay-ui {
-              position: fixed;
-              top: 10px;
-              left: 10px;
-              background: rgba(0,0,0,0.7);
-              padding: 8px 12px;
-              border-radius: 8px;
-              font-family: sans-serif;
-              color: white;
-              font-size: 14px;
-              z-index: 10000;
-              display: flex;
-              align-items: center;
-              gap: 6px;
-            }
-            #overlay-ui span {
-              color: limegreen;
-              font-size: 18px;
-            }
-          </style>
-          <div id="overlay-ui">
-            <span>✔</span> Bypassed
-          </div>
-        `;
-        win.document.body.appendChild(overlay);
-      }, 3000);
-    }
-  </script>
-
-  <script>
-    const canvas = document.getElementById("particles");
-    const ctx = canvas.getContext("2d");
-    let particles = [];
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-
-    class Particle {
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.radius = Math.random() * 1.5 + 1;
-        this.dx = (Math.random() - 0.5) * 0.5;
-        this.dy = (Math.random() - 0.5) * 0.5;
-      }
-
-      update() {
-        this.x += this.dx;
-        this.y += this.dy;
-
-        if (this.x < 0 || this.x > canvas.width) this.dx *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.dy *= -1;
-      }
-
-      draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = "white";
-        ctx.fill();
-      }
-    }
-
-    function initParticles(num) {
-      particles = [];
-      for (let i = 0; i < num; i++) {
-        particles.push(new Particle());
-      }
-    }
-
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      particles.forEach((p, index) => {
-        p.update();
-        p.draw();
-
-        for (let j = index + 1; j < particles.length; j++) {
-          const dx = p.x - particles[j].x;
-          const dy = p.y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < 100) {
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = "rgba(255,255,255,0.1)";
-            ctx.stroke();
-          }
+<!-- Load tsparticles library from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
+<script>
+  tsParticles.load("tsparticles", {
+    fullScreen: { enable: false },
+    fpsLimit: 60,
+    interactivity: {
+      events: {
+        onHover: {
+          enable: true,
+          mode: "repulse"
+        },
+        resize: true
+      },
+      modes: {
+        repulse: {
+          distance: 100,
+          duration: 0.4
         }
-      });
+      }
+    },
+    particles: {
+      color: { value: "#4da6ff" },
+      links: {
+        color: "#4da6ff",
+        distance: 120,
+        enable: true,
+        opacity: 0.2,
+        width: 1
+      },
+      collisions: { enable: false },
+      move: {
+        directions: "none",
+        enable: true,
+        outModes: { default: "bounce" },
+        random: false,
+        speed: 1,
+        straight: false
+      },
+      number: { density: { enable: true, area: 800 }, value: 40 },
+      opacity: { value: 0.3 },
+      shape: { type: "circle" },
+      size: { value: { min: 1, max: 4 } }
+    },
+    detectRetina: true
+  });
+</script>
 
-      requestAnimationFrame(animate);
-    }
+<script>
+  const bypassButton = document.getElementById('bypass-button');
+  const continueButton = document.getElementById('continue-button');
 
-    initParticles(100);
-    animate();
-  </script>
+  // When user clicks bypass, open Google Classroom in current tab for 5 seconds
+  // Then open new about:blank tab with bypass site (site.html with overlay)
+  bypassButton.addEventListener('click', () => {
+    // Redirect current tab to Google Classroom
+    window.location.href = 'https://classroom.google.com';
+
+    // After 5 seconds, open new tab with site.html in about:blank tab
+    setTimeout(() => {
+      window.open(window.location.origin + '/site.html', '_blank', 'noopener,noreferrer');
+    }, 5000);
+  });
+
+  // Continue unbypassed just redirects to site.html in current tab
+  continueButton.addEventListener('click', () => {
+    window.location.href = 'site.html';
+  });
+</script>
+
 </body>
 </html>
