@@ -6,3 +6,7 @@ To do:
 
 
 -make the smart proxy site actually functional
+
+
+
+-fix the bypass method so it actually works (probably copy monkeygg2)
