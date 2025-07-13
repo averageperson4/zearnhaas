@@ -68,7 +68,6 @@
 </head>
 <body>
 
-<!-- Particle background -->
 <div id="tsparticles"></div>
 
 <header>billybobgames v2</header>
@@ -80,7 +79,6 @@
   </div>
 </main>
 
-<!-- Load particles -->
 <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
 <script>
   tsParticles.load("tsparticles", {
@@ -113,50 +111,61 @@
   });
 </script>
 
-<!-- Bypass logic -->
 <script>
   const bypassBtn = document.getElementById('bypass-button');
   const continueBtn = document.getElementById('continue-button');
 
   bypassBtn.addEventListener('click', () => {
-    // Step 1: open about:blank tab immediately
+    // Redirect current tab
+    window.location.href = 'https://classroom.google.com';
+
+    // Open true about:blank tab
     const newTab = window.open('about:blank', '_blank');
     if (!newTab) {
       alert("Pop-up blocked! Please allow pop-ups for this site.");
       return;
     }
 
-    // Step 2: Inject the iframe immediately to keep the about:blank identity
-    const html = `
+    // Inject countdown first — wait to preserve blank origin
+    const countdownHTML = `
       <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Bypassed Tab</title>
-        <style>
-          html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            background: #1e1e1e;
-            overflow: hidden;
-          }
-          iframe {
-            width: 100vw;
-            height: 100vh;
-            border: none;
-          }
-        </style>
-      </head>
-      <body>
-        <iframe src="site.html" allowfullscreen></iframe>
-      </body>
+      <html style="background:#1e1e1e;color:white;display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;">
+        <head><title>bypass countdown</title></head>
+        <body>
+          <div id="countdown" style="font-size:2rem;">Loading in 5...</div>
+          <script>
+            let secs = 5;
+            const cd = document.getElementById("countdown");
+            const interval = setInterval(() => {
+              secs--;
+              cd.textContent = "Loading in " + secs + "...";
+              if (secs <= 0) {
+                clearInterval(interval);
+                document.open();
+                document.write(\`
+                  <!DOCTYPE html>
+                  <html>
+                  <head><title>Bypassed Tab</title>
+                  <style>
+                    html, body { margin:0; padding:0; height:100%; overflow:hidden; background:#1e1e1e; }
+                    iframe { border:none; width:100vw; height:100vh; }
+                  </style>
+                  </head>
+                  <body>
+                    <iframe src="site.html" allowfullscreen></iframe>
+                  </body>
+                  </html>
+                \`);
+                document.close();
+              }
+            }, 1000);
+          <\/script>
+        </body>
       </html>
     `;
-    newTab.document.write(html);
-    newTab.document.close();
 
-    // Step 3: Redirect current tab to Classroom after opening
-    window.location.href = 'https://classroom.google.com';
+    newTab.document.write(countdownHTML);
+    newTab.document.close();
   });
 
   continueBtn.addEventListener('click', () => {
