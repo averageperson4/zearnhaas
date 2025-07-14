@@ -23,7 +23,7 @@ It’s maintained specifically to function reliably at my school throughout the 
 - **My Dad**  
   For teaching me some basics about HTML and web development.
 
-- **ChatGPT**  
+- **Chatgpt**  
   For helping write most of the backend and teaching me a lot about site structure, design, and functionality along the way.
 
 - **My Gramma**  
