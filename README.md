@@ -1,17 +1,27 @@
-This a recreation of now defunct 'billybobgames.github.io.' I will maintain it specifically to work at this school as the year goes on.
+# BillybobGames Revival
 
+This is a recreation of the now-defunct **billybobgames.github.io**.  
+It’s maintained specifically to function reliably at my school throughout the school year.
 
+---
 
-To do:
--download game preview image files to server for less load and more reliability
+## ✅ Project Goals
 
+- 🖼️ **Improve Performance:**  
+  Download all game preview image files to the server for faster load times and improved reliability.
 
+- 🌐 **Fully Functional Proxy:**  
+  Make the smart proxy site work consistently and effectively, including bypass capabilities.
 
--make the smart proxy site actually functional
+---
 
+## 🙏 Credits
 
+- **MonkeyGG2**  
+  For inspiring the styling of the site and giving me the idea for the bypass system.
 
-Credits:
-monkeygg2 for inspiring the stlying of the site, as well as giving me the idea to make the bypass
-my dad for teaching me a bit about html
-chatgpt for basically making the entire backend and teaching me alot about site design
+- **My Dad**  
+  For teaching me some basics about HTML and web development.
+
+- **ChatGPT**  
+  For helping write most of the backend and teaching me a lot about site structure, design, and functionality.
