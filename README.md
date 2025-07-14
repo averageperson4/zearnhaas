@@ -30,7 +30,7 @@ It’s maintained specifically to function reliably at my school throughout the 
   <summary>**My Gramma** (click to expand)</summary>
 
   Told me this was a terrible idea and that I would get suspended.  
-  Her warnings have only made me stronger 💀
+  Thanks for the motivation 💀
 
   <br>
 
