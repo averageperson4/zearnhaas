@@ -148,6 +148,11 @@
       #countdown {
         font-size: 2rem;
       }
+      iframe {
+        border: none;
+        width: 100vw;
+        height: 100vh;
+      }
     `;
     doc.head.appendChild(style);
 
@@ -161,13 +166,17 @@
       seconds--;
       countdownDiv.textContent = `Loading in ${seconds}...`;
       if (seconds <= 0) {
-        clearInterval(interval);
+        doc.defaultView.clearInterval(interval);
         loadIframe();
       }
     }, 1000);
 
     function loadIframe() {
-      body.innerHTML = '';
+      // Remove countdown div cleanly without resetting whole body
+      if (countdownDiv.parentNode) {
+        countdownDiv.parentNode.removeChild(countdownDiv);
+      }
+
       const iframe = doc.createElement('iframe');
       iframe.src = 'site.html';
       iframe.allowFullscreen = true;
