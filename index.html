@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Google Classroom Home</title>
+  <title>billybobgames v2</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -15,29 +16,31 @@
       height: 100vh;
       display: flex;
       flex-direction: column;
-    }
-    main {
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
-      gap: 20px;
+      justify-content: center;
+      user-select: none;
+    }
+    #title {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 4rem;
+      background: linear-gradient(90deg, #4da6ff, #1e90ff, #4da6ff);
+      background-size: 200% 200%;
+      animation: gradientShift 3s ease infinite;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 8px rgba(77, 166, 255, 0.6);
+      margin-bottom: 3rem;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    #button-container {
+      display: flex;
+      gap: 40px;
       z-index: 10;
-      position: relative;
-    }
-    #bubble {
-      background: #3a3a3a;
-      padding: 2rem 3rem;
-      border-radius: 20px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.4);
-      text-align: center;
-    }
-    h1 {
-      margin-top: 0;
-      font-size: 2rem;
-      color: #4da6ff;
-      margin-bottom: 1rem;
     }
     button {
       background: #4da6ff;
@@ -53,12 +56,6 @@
     button:hover {
       background: #3a8dde;
     }
-    #button-container {
-      display: flex;
-      gap: 40px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
     #tsparticles {
       position: fixed;
       top: 0; left: 0;
@@ -73,15 +70,12 @@
 
 <div id="tsparticles"></div>
 
-<main>
-  <div id="bubble">
-    <h1>Classroom Hub (Beta)</h1>
-    <div id="button-container">
-      <button id="bypass-button">Bypass GoGuardian</button>
-      <button id="continue-button">Continue Unbypassed</button>
-    </div>
-  </div>
-</main>
+<div id="title">billybobgames v2</div>
+
+<div id="button-container">
+  <button id="bypass-button">Bypass GoGuardian</button>
+  <button id="continue-button">Continue Unbypassed</button>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
 <script>
@@ -99,15 +93,14 @@
       },
       collisions: { enable: false },
       move: {
+        directions: "none",
         enable: true,
+        outModes: { default: "bounce" },
+        random: false,
         speed: 1,
-        direction: "none",
-        outModes: { default: "bounce" }
+        straight: false
       },
-      number: {
-        value: 40,
-        density: { enable: true, area: 800 }
-      },
+      number: { density: { enable: true, area: 800 }, value: 40 },
       opacity: { value: 0.3 },
       shape: { type: "circle" },
       size: { value: { min: 1, max: 4 } }
@@ -128,15 +121,15 @@
       return;
     }
 
-    // Redirect this tab to classroom
+    // Redirect current tab to Google Classroom
     window.location.href = 'https://classroom.google.com';
 
+    // Setup content manually using DOM (not document.write)
     const doc = newTab.document;
     const body = doc.body;
 
-    doc.title = "Home";
+    doc.title = "billybobgames bypass";
 
-    // Add styling
     const style = doc.createElement('style');
     style.textContent = `
       body {
@@ -158,34 +151,47 @@
         border: none;
         width: 100vw;
         height: 100vh;
-        position: absolute;
-        top: 0;
-        left: 0;
       }
       #go-home-btn {
         position: fixed;
-        top: 12px;
-        right: 12px;
+        top: 15px;
+        right: 15px;
         background: #4da6ff;
         border: none;
-        border-radius: 20px;
-        padding: 10px 14px;
-        font-size: 16px;
-        font-weight: bold;
+        border-radius: 50%;
         color: white;
+        font-size: 24px;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
         z-index: 9999;
-        transition: all 0.3s ease;
-        white-space: nowrap;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        transition: width 0.3s ease, border-radius 0.3s ease, padding 0.3s ease;
         overflow: hidden;
+        white-space: nowrap;
+        user-select: none;
       }
       #go-home-btn:hover {
-        padding-right: 18px;
+        width: auto;
+        border-radius: 8px;
+        padding: 0 14px;
+        font-weight: 600;
+      }
+      #go-home-btn span {
+        margin-left: 8px;
+        font-size: 1rem;
+        display: none;
+      }
+      #go-home-btn:hover span {
+        display: inline;
       }
     `;
     doc.head.appendChild(style);
 
-    // Countdown
+    // Countdown div
     const countdownDiv = doc.createElement('div');
     countdownDiv.id = 'countdown';
     countdownDiv.textContent = 'Loading in 5...';
@@ -196,34 +202,35 @@
       seconds--;
       countdownDiv.textContent = `Loading in ${seconds}...`;
       if (seconds <= 0) {
-        clearInterval(interval);
-        loadIframe();
+        doc.defaultView.clearInterval(interval);
+        loadIframeWithGoHomeBtn();
       }
     }, 1000);
 
-    function loadIframe() {
-      if (countdownDiv.parentNode) {
-        countdownDiv.parentNode.removeChild(countdownDiv);
-      }
+    function loadIframeWithGoHomeBtn() {
+      // Remove countdown div cleanly
+      if (countdownDiv.parentNode) countdownDiv.parentNode.removeChild(countdownDiv);
 
+      // Create iframe
       const iframe = doc.createElement('iframe');
       iframe.src = 'site.html';
       iframe.allowFullscreen = true;
+      iframe.style.border = 'none';
+      iframe.style.width = '100vw';
+      iframe.style.height = '100vh';
       body.appendChild(iframe);
 
+      // Create Go Home button
       const goHomeBtn = doc.createElement('button');
-      goHomeBtn.innerHTML = '🏠';
       goHomeBtn.id = 'go-home-btn';
-      goHomeBtn.addEventListener('mouseenter', () => {
-        goHomeBtn.textContent = '🏠 Go Home';
-      });
-      goHomeBtn.addEventListener('mouseleave', () => {
-        goHomeBtn.textContent = '🏠';
-      });
+      goHomeBtn.title = 'Go Home';
+      goHomeBtn.innerHTML = '🏠<span>Go Home</span>';
+      body.appendChild(goHomeBtn);
+
       goHomeBtn.addEventListener('click', () => {
+        // Reload iframe src to refresh game or site content
         iframe.src = iframe.src;
       });
-      body.appendChild(goHomeBtn);
     }
   });
 
