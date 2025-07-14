@@ -79,7 +79,6 @@
   </div>
 </main>
 
-<!-- tsparticles background -->
 <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
 <script>
   tsParticles.load("tsparticles", {
@@ -117,63 +116,66 @@
   const continueBtn = document.getElementById('continue-button');
 
   bypassBtn.addEventListener('click', () => {
-    // Open blank tab FIRST
-    const newTab = window.open('about:blank', '_blank');
+    // Open about:blank tab immediately
+    const newTab = window.open('about:blank');
     if (!newTab) {
       alert("Pop-up blocked! Please allow pop-ups for this site.");
       return;
     }
 
-    // Redirect current tab
+    // Redirect current tab to Google Classroom
     window.location.href = 'https://classroom.google.com';
 
-    // Write countdown and iframe loader into new tab
-    const countdownHTML = `
-      <!DOCTYPE html>
-      <html style="background:#1e1e1e;color:white;display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;">
-        <head><title>bypass countdown</title></head>
-        <body>
-          <div id="countdown" style="font-size:2rem;">Loading in 5...</div>
-          <script>
-            let secs = 5;
-            const cd = document.getElementById("countdown");
-            const interval = setInterval(() => {
-              secs--;
-              cd.textContent = "Loading in " + secs + "...";
-              if (secs <= 0) {
-                clearInterval(interval);
-                document.open();
-                document.write(\`
-                  <!DOCTYPE html>
-                  <html>
-                    <head><title>Bypassed Tab</title>
-                      <style>
-                        html, body {
-                          margin:0; padding:0; height:100%;
-                          background:#1e1e1e; overflow:hidden;
-                        }
-                        iframe {
-                          border:none;
-                          width:100vw;
-                          height:100vh;
-                        }
-                      </style>
-                    </head>
-                    <body>
-                      <iframe src="site.html" allowfullscreen></iframe>
-                    </body>
-                  </html>
-                \`);
-                document.close();
-              }
-            }, 1000);
-          <\/script>
-        </body>
-      </html>
-    `;
+    // Setup content manually using DOM (not document.write)
+    const doc = newTab.document;
+    const body = doc.body;
 
-    newTab.document.write(countdownHTML);
-    newTab.document.close();
+    doc.title = "billybobgames bypass";
+
+    const style = doc.createElement('style');
+    style.textContent = `
+      body {
+        background: #1e1e1e;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: sans-serif;
+        margin: 0;
+        overflow: hidden;
+      }
+      #countdown {
+        font-size: 2rem;
+      }
+    `;
+    doc.head.appendChild(style);
+
+    const countdownDiv = doc.createElement('div');
+    countdownDiv.id = 'countdown';
+    countdownDiv.textContent = 'Loading in 5...';
+    body.appendChild(countdownDiv);
+
+    let seconds = 5;
+    const interval = doc.defaultView.setInterval(() => {
+      seconds--;
+      countdownDiv.textContent = `Loading in ${seconds}...`;
+      if (seconds <= 0) {
+        clearInterval(interval);
+        loadIframe();
+      }
+    }, 1000);
+
+    function loadIframe() {
+      body.innerHTML = '';
+      const iframe = doc.createElement('iframe');
+      iframe.src = 'site.html';
+      iframe.allowFullscreen = true;
+      iframe.style.border = 'none';
+      iframe.style.width = '100vw';
+      iframe.style.height = '100vh';
+      body.appendChild(iframe);
+    }
   });
 
   continueBtn.addEventListener('click', () => {
