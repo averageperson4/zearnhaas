@@ -14,30 +14,30 @@
       overflow: hidden;
       height: 100vh;
       display: flex;
+      flex-direction: column;
+    }
+    main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
+      gap: 20px;
+      z-index: 10;
+      position: relative;
     }
-    #bubble-container {
+    #bubble {
       background: #3a3a3a;
-      border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.7);
-      padding: 40px 60px;
+      padding: 2rem 3rem;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
       text-align: center;
-      max-width: 320px;
-      width: 90vw;
-      user-select: none;
     }
-    #title-text {
-      font-weight: 700;
-      font-size: 1.8rem;
-      margin-bottom: 24px;
+    h1 {
+      margin-top: 0;
+      font-size: 2rem;
       color: #4da6ff;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    #button-container {
-      display: flex;
-      gap: 40px;
-      justify-content: center;
+      margin-bottom: 1rem;
     }
     button {
       background: #4da6ff;
@@ -48,10 +48,16 @@
       color: white;
       cursor: pointer;
       transition: background-color 0.3s ease;
-      min-width: 140px;
+      min-width: 220px;
     }
     button:hover {
       background: #3a8dde;
+    }
+    #button-container {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
     #tsparticles {
       position: fixed;
@@ -67,13 +73,15 @@
 
 <div id="tsparticles"></div>
 
-<div id="bubble-container">
-  <div id="title-text">classroom hub (beta)</div>
-  <div id="button-container">
-    <button id="bypass-button">Bypass GoGuardian</button>
-    <button id="continue-button">Continue Unbypassed</button>
+<main>
+  <div id="bubble">
+    <h1>Classroom Hub (Beta)</h1>
+    <div id="button-container">
+      <button id="bypass-button">Bypass GoGuardian</button>
+      <button id="continue-button">Continue Unbypassed</button>
+    </div>
   </div>
-</div>
+</main>
 
 <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
 <script>
@@ -91,14 +99,15 @@
       },
       collisions: { enable: false },
       move: {
-        directions: "none",
         enable: true,
-        outModes: { default: "bounce" },
-        random: false,
         speed: 1,
-        straight: false
+        direction: "none",
+        outModes: { default: "bounce" }
       },
-      number: { density: { enable: true, area: 800 }, value: 40 },
+      number: {
+        value: 40,
+        density: { enable: true, area: 800 }
+      },
       opacity: { value: 0.3 },
       shape: { type: "circle" },
       size: { value: { min: 1, max: 4 } }
@@ -112,11 +121,14 @@
   const continueBtn = document.getElementById('continue-button');
 
   bypassBtn.addEventListener('click', () => {
+    // Open about:blank tab immediately
     const newTab = window.open('about:blank');
     if (!newTab) {
       alert("Pop-up blocked! Please allow pop-ups for this site.");
       return;
     }
+
+    // Redirect this tab to classroom
     window.location.href = 'https://classroom.google.com';
 
     const doc = newTab.document;
@@ -124,6 +136,7 @@
 
     doc.title = "Home";
 
+    // Add styling
     const style = doc.createElement('style');
     style.textContent = `
       body {
@@ -136,6 +149,7 @@
         font-family: sans-serif;
         margin: 0;
         overflow: hidden;
+        position: relative;
       }
       #countdown {
         font-size: 2rem;
@@ -144,10 +158,34 @@
         border: none;
         width: 100vw;
         height: 100vh;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      #go-home-btn {
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        background: #4da6ff;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 14px;
+        font-size: 16px;
+        font-weight: bold;
+        color: white;
+        cursor: pointer;
+        z-index: 9999;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      #go-home-btn:hover {
+        padding-right: 18px;
       }
     `;
     doc.head.appendChild(style);
 
+    // Countdown
     const countdownDiv = doc.createElement('div');
     countdownDiv.id = 'countdown';
     countdownDiv.textContent = 'Loading in 5...';
@@ -158,17 +196,35 @@
       seconds--;
       countdownDiv.textContent = `Loading in ${seconds}...`;
       if (seconds <= 0) {
-        doc.defaultView.clearInterval(interval);
-        if (countdownDiv.parentNode) countdownDiv.parentNode.removeChild(countdownDiv);
-        const iframe = doc.createElement('iframe');
-        iframe.src = 'site.html';
-        iframe.allowFullscreen = true;
-        iframe.style.border = 'none';
-        iframe.style.width = '100vw';
-        iframe.style.height = '100vh';
-        body.appendChild(iframe);
+        clearInterval(interval);
+        loadIframe();
       }
     }, 1000);
+
+    function loadIframe() {
+      if (countdownDiv.parentNode) {
+        countdownDiv.parentNode.removeChild(countdownDiv);
+      }
+
+      const iframe = doc.createElement('iframe');
+      iframe.src = 'site.html';
+      iframe.allowFullscreen = true;
+      body.appendChild(iframe);
+
+      const goHomeBtn = doc.createElement('button');
+      goHomeBtn.innerHTML = '🏠';
+      goHomeBtn.id = 'go-home-btn';
+      goHomeBtn.addEventListener('mouseenter', () => {
+        goHomeBtn.textContent = '🏠 Go Home';
+      });
+      goHomeBtn.addEventListener('mouseleave', () => {
+        goHomeBtn.textContent = '🏠';
+      });
+      goHomeBtn.addEventListener('click', () => {
+        iframe.src = iframe.src;
+      });
+      body.appendChild(goHomeBtn);
+    }
   });
 
   continueBtn.addEventListener('click', () => {
