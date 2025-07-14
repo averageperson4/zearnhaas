@@ -26,11 +26,13 @@ It’s maintained specifically to function reliably at my school throughout the 
 - **ChatGPT**  
   For helping write most of the backend and teaching me a lot about site structure, design, and functionality.
 
-- **My Gramma**  
-  For telling me this was a terrible idea and I would get suspended. (Thanks for the motivation 💀)
-
 <details>
-  <summary>📱 Gramma's Reaction (Click to expand)</summary>
+  <summary>**My Gramma** (click to expand)</summary>
+
+  Told me this was a terrible idea and that I would get suspended.  
+  Her warnings have only made me stronger 💀
+
+  <br>
 
   <img src="siteimages/gramma/i%20chuckle%20and%20fear.jpeg" alt="I chuckle and fear" width="400"/>  
   <img src="siteimages/gramma/appreciate%20your%20candor.jpeg" alt="Appreciate your candor" width="400"/>
