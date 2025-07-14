@@ -24,7 +24,7 @@ It’s maintained specifically to function reliably at my school throughout the 
   For teaching me some basics about HTML and web development.
 
 - **ChatGPT**  
-  For helping write most of the backend and teaching me a lot about site structure, design, and functionality.
+  For helping write most of the backend and teaching me a lot about site structure, design, and functionality along the way.
 
 - **My Gramma**  
   For telling me this was a terrible idea and I would get suspended. (Thanks for the motivation 💀)
