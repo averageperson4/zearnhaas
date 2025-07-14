@@ -11,7 +11,7 @@ It’s maintained specifically to function reliably at my school throughout the 
   Download all game preview image files to the server for faster load times and improved reliability.
 
 - 🌐 **Fully Functional Proxy:**  
-  Make the smart proxy site work consistently and effectively, including bypass capabilities.
+  Make the smart proxy site actually work instead of just being a ui
 
 ---
 
