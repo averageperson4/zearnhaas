@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="siteimages/logo.jpeg" alt="BillybobGames Logo" width="200"/>
+</p>
+
 # BillybobGames Revival
 
 This is a recreation of the now-defunct **billybobgames.github.io**.  
