@@ -14,8 +14,6 @@ To do:
 Credits:
 monkeygg2 for inspiring the stlying of the site, as well as giving me the idea to make the bypass
 
-
 my dad for teaching me a bit about html
-
 
 chatgpt for basically making the entire backend and teaching me alot about site design
