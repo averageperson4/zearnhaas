@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="siteimages/logo.jpeg" alt="BillybobGames Logo" width="200"/>
+  <img src="siteimages/logo.jpeg" alt="BillybobGames Logo" style="max-width: 600px; width: 100%; height: auto;"/>
 </p>
 
 # BillybobGames Revival
