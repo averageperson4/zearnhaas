@@ -1,4 +1,6 @@
-This a recreation of now defunct 'billybobgames.github.io.' I will maintain it specifically to work at this school as the year goes on. If someone charged you to use this site, you are an idiot and got scammed. If you are playing games on your computer at lunch, go outside and socialize.
+This a recreation of now defunct 'billybobgames.github.io.' I will maintain it specifically to work at this school as the year goes on.
+
+
 
 To do:
 -download game preview image files to server for less load and more reliability
@@ -9,4 +11,11 @@ To do:
 
 
 
--fix the bypass method so it actually works (probably copy monkeygg2)
+Credits:
+monkeygg2 for inspiring the stlying of the site, as well as giving me the idea to make the bypass
+
+
+my dad for teaching me a bit about html
+
+
+chatgpt for basically making the entire backend and teaching me alot about site design
