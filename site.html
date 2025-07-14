@@ -5,6 +5,58 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Zearn</title>
 <style>
+ <script>
+  // Create nav container
+  const nav = document.createElement('nav');
+  nav.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #444;
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    user-select: none;
+    z-index: 1000;
+  `;
+
+  // Create "Go Home" button
+  const goHomeBtn = document.createElement('button');
+  goHomeBtn.textContent = "Go Home";
+  goHomeBtn.style.cssText = `
+    background: #4da6ff;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    padding: 8px 16px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  `;
+  goHomeBtn.onmouseenter = () => goHomeBtn.style.backgroundColor = '#3a8dde';
+  goHomeBtn.onmouseleave = () => goHomeBtn.style.backgroundColor = '#4da6ff';
+
+  nav.appendChild(goHomeBtn);
+  document.body.insertBefore(nav, document.body.firstChild);
+
+  // Find the iframe (assumes only one iframe on the page)
+  const iframe = document.querySelector('iframe');
+
+  // Reload iframe on button click
+  goHomeBtn.addEventListener('click', () => {
+    if (iframe) {
+      iframe.src = iframe.src; // reload iframe
+    } else {
+      alert("Iframe not found.");
+    }
+  });
+
+  // Add some top padding to body content so it doesn't get hidden behind nav
+  document.body.style.paddingTop = nav.offsetHeight + 'px';
+</script>
   * {
     box-sizing: border-box;
   }
