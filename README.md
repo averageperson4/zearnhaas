@@ -25,3 +25,6 @@ It’s maintained specifically to function reliably at my school throughout the 
 
 - **ChatGPT**  
   For helping write most of the backend and teaching me a lot about site structure, design, and functionality.
+
+- **My Gramma**  
+  For telling me this was a terrible idea and I would get suspended. (Thanks for the motivation 💀)
