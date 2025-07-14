@@ -14,29 +14,30 @@
       overflow: hidden;
       height: 100vh;
       display: flex;
-      flex-direction: column;
-    }
-    header {
-      background-color: #3a3a3a;
-      padding: 1.2rem 2rem;
-      color: white;
-      font-weight: 700;
-      font-size: 1.8rem;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      user-select: none;
-      z-index: 10;
-    }
-    main {
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 20px;
-      z-index: 10;
-      position: relative;
+    }
+    #bubble-container {
+      background: #3a3a3a;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.7);
+      padding: 40px 60px;
+      text-align: center;
+      max-width: 320px;
+      width: 90vw;
+      user-select: none;
+    }
+    #title-text {
+      font-weight: 700;
+      font-size: 1.8rem;
+      margin-bottom: 24px;
+      color: #4da6ff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    #button-container {
+      display: flex;
+      gap: 40px;
+      justify-content: center;
     }
     button {
       background: #4da6ff;
@@ -47,14 +48,10 @@
       color: white;
       cursor: pointer;
       transition: background-color 0.3s ease;
-      min-width: 220px;
+      min-width: 140px;
     }
     button:hover {
       background: #3a8dde;
-    }
-    #button-container {
-      display: flex;
-      gap: 40px;
     }
     #tsparticles {
       position: fixed;
@@ -70,14 +67,13 @@
 
 <div id="tsparticles"></div>
 
-<header>billybobgames v2</header>
-
-<main>
+<div id="bubble-container">
+  <div id="title-text">classroom hub (beta)</div>
   <div id="button-container">
     <button id="bypass-button">Bypass GoGuardian</button>
     <button id="continue-button">Continue Unbypassed</button>
   </div>
-</main>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
 <script>
@@ -116,17 +112,13 @@
   const continueBtn = document.getElementById('continue-button');
 
   bypassBtn.addEventListener('click', () => {
-    // Open about:blank tab immediately
     const newTab = window.open('about:blank');
     if (!newTab) {
       alert("Pop-up blocked! Please allow pop-ups for this site.");
       return;
     }
-
-    // Redirect current tab to Google Classroom
     window.location.href = 'https://classroom.google.com';
 
-    // Setup content manually using DOM (not document.write)
     const doc = newTab.document;
     const body = doc.body;
 
@@ -167,24 +159,16 @@
       countdownDiv.textContent = `Loading in ${seconds}...`;
       if (seconds <= 0) {
         doc.defaultView.clearInterval(interval);
-        loadIframe();
+        if (countdownDiv.parentNode) countdownDiv.parentNode.removeChild(countdownDiv);
+        const iframe = doc.createElement('iframe');
+        iframe.src = 'site.html';
+        iframe.allowFullscreen = true;
+        iframe.style.border = 'none';
+        iframe.style.width = '100vw';
+        iframe.style.height = '100vh';
+        body.appendChild(iframe);
       }
     }, 1000);
-
-    function loadIframe() {
-      // Remove countdown div cleanly without resetting whole body
-      if (countdownDiv.parentNode) {
-        countdownDiv.parentNode.removeChild(countdownDiv);
-      }
-
-      const iframe = doc.createElement('iframe');
-      iframe.src = 'site.html';
-      iframe.allowFullscreen = true;
-      iframe.style.border = 'none';
-      iframe.style.width = '100vw';
-      iframe.style.height = '100vh';
-      body.appendChild(iframe);
-    }
   });
 
   continueBtn.addEventListener('click', () => {
