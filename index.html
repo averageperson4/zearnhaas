@@ -79,6 +79,7 @@
   </div>
 </main>
 
+<!-- tsparticles background -->
 <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
 <script>
   tsParticles.load("tsparticles", {
@@ -116,17 +117,17 @@
   const continueBtn = document.getElementById('continue-button');
 
   bypassBtn.addEventListener('click', () => {
-    // Redirect current tab
-    window.location.href = 'https://classroom.google.com';
-
-    // Open true about:blank tab
+    // Open blank tab FIRST
     const newTab = window.open('about:blank', '_blank');
     if (!newTab) {
       alert("Pop-up blocked! Please allow pop-ups for this site.");
       return;
     }
 
-    // Inject countdown first — wait to preserve blank origin
+    // Redirect current tab
+    window.location.href = 'https://classroom.google.com';
+
+    // Write countdown and iframe loader into new tab
     const countdownHTML = `
       <!DOCTYPE html>
       <html style="background:#1e1e1e;color:white;display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;">
@@ -145,15 +146,22 @@
                 document.write(\`
                   <!DOCTYPE html>
                   <html>
-                  <head><title>Bypassed Tab</title>
-                  <style>
-                    html, body { margin:0; padding:0; height:100%; overflow:hidden; background:#1e1e1e; }
-                    iframe { border:none; width:100vw; height:100vh; }
-                  </style>
-                  </head>
-                  <body>
-                    <iframe src="site.html" allowfullscreen></iframe>
-                  </body>
+                    <head><title>Bypassed Tab</title>
+                      <style>
+                        html, body {
+                          margin:0; padding:0; height:100%;
+                          background:#1e1e1e; overflow:hidden;
+                        }
+                        iframe {
+                          border:none;
+                          width:100vw;
+                          height:100vh;
+                        }
+                      </style>
+                    </head>
+                    <body>
+                      <iframe src="site.html" allowfullscreen></iframe>
+                    </body>
                   </html>
                 \`);
                 document.close();
