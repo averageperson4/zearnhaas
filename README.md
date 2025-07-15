@@ -11,11 +11,8 @@ It’s maintained specifically to function reliably at my school throughout the 
 
 ## ✅ Project Goals
 
-- 🖼️ **Improve Performance:**  
-  Download all game preview image files to the server for faster load times and improved reliability.
-
 - 🌐 **Fully Functional Proxy:**  
-  Make the smart proxy site work consistently and effectively, including bypass capabilities.
+  Make a smart proxy site that automatically finds a good proxy for the user. We would host our own proxies, and if it couldnt connect to one of ours, it would try pinging a large list of third party proxies that is constantly being maintained. The user would never have to try multiple proxies, as the system would do everything automatically.
 
 ---
 
