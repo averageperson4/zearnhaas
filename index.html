@@ -114,124 +114,65 @@
   const continueBtn = document.getElementById('continue-button');
 
   bypassBtn.addEventListener('click', () => {
-    // Open about:blank tab immediately
     const newTab = window.open('about:blank');
     if (!newTab) {
       alert("Pop-up blocked! Please allow pop-ups for this site.");
       return;
     }
 
-    // Redirect current tab to Google Classroom
     window.location.href = 'https://classroom.google.com';
 
-    // Setup content manually using DOM (not document.write)
-    const doc = newTab.document;
-    const body = doc.body;
+    const code = `
+      document.title = "Launching...";
+      document.body.style = 'display:flex;justify-content:center;align-items:center;height:100vh;font-size:48px;font-family:sans-serif;color:white;background:#121212;margin:0;';
+      
+      let countdown = 5;
+      const div = document.createElement('div');
+      div.textContent = countdown;
+      document.body.appendChild(div);
 
-    doc.title = "Home";
+      const interval = setInterval(() => {
+        countdown--;
+        if (countdown <= 0) {
+          clearInterval(interval);
+          div.textContent = 'Loading...';
 
-    const style = doc.createElement('style');
-    style.textContent = `
-      body {
-        background: #1e1e1e;
-        color: white;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        font-family: sans-serif;
-        margin: 0;
-        overflow: hidden;
-        position: relative;
-      }
-      #countdown {
-        font-size: 2rem;
-      }
-      iframe {
-        border: none;
-        width: 100vw;
-        height: 100vh;
-      }
-      #go-home-btn {
-        position: fixed;
-        top: 15px;
-        right: 15px;
-        background: #4da6ff;
-        border: none;
-        border-radius: 50%;
-        color: white;
-        font-size: 24px;
-        width: 48px;
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        z-index: 9999;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        transition: width 0.3s ease, border-radius 0.3s ease, padding 0.3s ease;
-        overflow: hidden;
-        white-space: nowrap;
-        user-select: none;
-      }
-      #go-home-btn:hover {
-        width: auto;
-        border-radius: 8px;
-        padding: 0 14px;
-        font-weight: 600;
-      }
-      #go-home-btn span {
-        margin-left: 8px;
-        font-size: 1rem;
-        display: none;
-      }
-      #go-home-btn:hover span {
-        display: inline;
-      }
+          const iframe = document.createElement('iframe');
+          iframe.src = 'site.html';
+          iframe.style = 'width:100vw;height:100vh;border:none;';
+          document.body.innerHTML = '';
+          document.body.appendChild(iframe);
+
+          const goHomeBtn = document.createElement('button');
+          goHomeBtn.textContent = '🏠';
+          goHomeBtn.title = 'Go Home';
+          goHomeBtn.style = 'position:fixed;top:15px;right:15px;font-size:32px;padding:10px;background:#4da6ff;border:none;border-radius:50%;color:#fff;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.3);transition:width 0.3s ease, border-radius 0.3s ease;overflow:hidden;white-space:nowrap;user-select:none;z-index:9999;';
+          goHomeBtn.onmouseenter = () => {
+            goHomeBtn.style.width = 'auto';
+            goHomeBtn.style.borderRadius = '8px';
+            goHomeBtn.style.padding = '0 14px';
+            goHomeBtn.style.fontWeight = '600';
+          };
+          goHomeBtn.onmouseleave = () => {
+            goHomeBtn.style.width = '48px';
+            goHomeBtn.style.borderRadius = '50%';
+            goHomeBtn.style.padding = '10px';
+            goHomeBtn.style.fontWeight = 'normal';
+          };
+          goHomeBtn.onclick = () => {
+            iframe.src = iframe.src;
+          };
+          document.body.appendChild(goHomeBtn);
+        } else {
+          div.textContent = countdown;
+        }
+      }, 1000);
     `;
-    doc.head.appendChild(style);
 
-    // Countdown div
-    const countdownDiv = doc.createElement('div');
-    countdownDiv.id = 'countdown';
-    countdownDiv.textContent = 'Loading in 5...';
-    body.appendChild(countdownDiv);
-
-    let seconds = 5;
-    const interval = doc.defaultView.setInterval(() => {
-      seconds--;
-      countdownDiv.textContent = `Loading in ${seconds}...`;
-      if (seconds <= 0) {
-        doc.defaultView.clearInterval(interval);
-        loadIframeWithGoHomeBtn();
-      }
-    }, 1000);
-
-    function loadIframeWithGoHomeBtn() {
-      // Remove countdown div cleanly
-      if (countdownDiv.parentNode) countdownDiv.parentNode.removeChild(countdownDiv);
-
-      // Create iframe
-      const iframe = doc.createElement('iframe');
-      iframe.src = 'site.html';
-      iframe.allowFullscreen = true;
-      iframe.style.border = 'none';
-      iframe.style.width = '100vw';
-      iframe.style.height = '100vh';
-      body.appendChild(iframe);
-
-      // Create Go Home button
-      const goHomeBtn = doc.createElement('button');
-      goHomeBtn.id = 'go-home-btn';
-      goHomeBtn.title = 'Go Home';
-      goHomeBtn.innerHTML = '🏠<span>Go Home</span>';
-      body.appendChild(goHomeBtn);
-
-      goHomeBtn.addEventListener('click', () => {
-        // Reload iframe src to refresh game or site content
-        iframe.src = iframe.src;
-      });
-    }
+    const script = newTab.document.createElement('script');
+    script.textContent = code;
+    newTab.document.body.innerHTML = '';
+    newTab.document.body.appendChild(script);
   });
 
   continueBtn.addEventListener('click', () => {
