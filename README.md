@@ -30,8 +30,7 @@ It’s maintained specifically to function reliably at my school throughout the 
 <details>
   <summary>**My Gramma** (click to expand)</summary>
 
-  Told me this was a terrible idea and that I would get suspended.  
-  Thanks for the motivation 💀
+ for telling me this was a terrible idea and that i would get suspended. thanks for the motivation 💀
 
   <br>
 
