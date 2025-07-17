@@ -22,7 +22,7 @@ It’s maintained specifically to function reliably at my school throughout the 
   For inspiring the styling of the site and giving me the idea for the bypass system.
 
 - **My Dad**  
-  For teaching me some basics about HTML and web development.
+  For standing up for me when gramma said it was a terrible idea
 
 - **ChatGPT**  
   For basically making the entire backend and helping me learn some stuff about web design
